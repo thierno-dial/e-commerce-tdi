@@ -1,0 +1,19 @@
+{
+  "name": "sneakers-ecommerce",
+  "version": "1.0.0",
+  "description": "Site e-commerce pour boutique de sneakers",
+  "main": "server/index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm start",
+    "build": "cd client && npm run build",
+    "install-deps": "npm install && cd server && npm install && cd ../client && npm install"
+  },
+  "keywords": ["ecommerce", "sneakers", "react", "nodejs"],
+  "author": "Thierno Diallo",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
