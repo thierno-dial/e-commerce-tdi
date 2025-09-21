@@ -36,7 +36,6 @@ module.exports = (sequelize) => {
       }
     },
     
-    // Prix unitaire au moment de l'achat (historique)
     unitPrice: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
@@ -46,7 +45,6 @@ module.exports = (sequelize) => {
       }
     },
     
-    // Prix total pour cet article
     totalPrice: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
@@ -59,17 +57,11 @@ module.exports = (sequelize) => {
   }, {
     tableName: 'order_items',
     
-    // Index
     indexes: [
-      {
-        fields: ['order_id']
-      },
-      {
-        fields: ['product_variant_id']
-      }
+      { fields: ['order_id'] },
+      { fields: ['product_variant_id'] }
     ],
     
-    // Hooks pour calculer automatiquement le prix total
     hooks: {
       beforeSave: (orderItem) => {
         orderItem.totalPrice = orderItem.unitPrice * orderItem.quantity;

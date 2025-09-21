@@ -39,7 +39,6 @@ module.exports = (sequelize) => {
   }, {
     tableName: 'cart_items',
     
-    // Index composé pour éviter les doublons
     indexes: [
       {
         unique: true,
@@ -48,15 +47,7 @@ module.exports = (sequelize) => {
       {
         fields: ['user_id']
       }
-    ],
-    
-    // Scopes
-    scopes: {
-      // Par utilisateur
-      byUser: (userId) => ({
-        where: { userId }
-      })
-    }
+    ]
   });
   
   return CartItem;
