@@ -1,6 +1,6 @@
-const { Product, ProductVariant } = require('../database');
+const { Product, ProductVariant, User } = require('../database');
 
-const essentialSneakers = [
+const sneakers = [
   { name: "Air Max 90", brand: "Nike", category: "men", basePrice: 129.99, sizes: ["40", "41", "42", "43", "44"] },
   { name: "Stan Smith", brand: "Adidas", category: "men", basePrice: 89.99, sizes: ["40", "41", "42", "43", "44"] },
   { name: "Air Force 1", brand: "Nike", category: "women", basePrice: 119.99, sizes: ["36", "37", "38", "39", "40"] },
@@ -8,16 +8,26 @@ const essentialSneakers = [
   { name: "Air Max Kids", brand: "Nike", category: "kids", basePrice: 69.99, sizes: ["28", "29", "30", "31", "32"] }
 ];
 
-const randomStock = () => Math.floor(Math.random() * 20) + 1;
+const users = [
+  { email: 'admin@sneakers.com', password: 'admin123', firstName: 'Admin', lastName: 'User', role: 'admin' },
+  { email: 'seller@sneakers.com', password: 'seller123', firstName: 'Seller', lastName: 'User', role: 'seller' },
+  { email: 'customer@sneakers.com', password: 'customer123', firstName: 'Customer', lastName: 'User', role: 'customer' }
+];
 
 async function seed() {
   try {
-    console.log('🌱 Seeding essential sneakers...');
+    const { sequelize } = require('../database');
+    await sequelize.sync();
     
     await ProductVariant.destroy({ where: {}, force: true });
     await Product.destroy({ where: {}, force: true });
+    await User.destroy({ where: {}, force: true });
     
-    for (const sneaker of essentialSneakers) {
+    for (const userData of users) {
+      await User.create(userData);
+    }
+    
+    for (const sneaker of sneakers) {
       const { sizes, ...productData } = sneaker;
       const product = await Product.create(productData);
       
@@ -25,17 +35,16 @@ async function seed() {
         productId: product.id,
         size,
         sizeType: 'EU',
-        stock: randomStock(),
+        stock: Math.floor(Math.random() * 20) + 1,
         sku: `${sneaker.brand.toUpperCase()}-${sneaker.name.replace(/\s+/g, '').toUpperCase()}-${sneaker.category.toUpperCase()}-${size}-EU`
       }));
       
       await ProductVariant.bulkCreate(variants);
-      console.log(`✅ ${sneaker.brand} ${sneaker.name}`);
     }
     
-    console.log(`🎉 Created ${essentialSneakers.length} essential sneakers with variants`);
+    console.log('Seeding completed');
   } catch (error) {
-    console.error('❌ Seeding failed:', error);
+    console.error('Seeding failed:', error);
   }
 }
 
