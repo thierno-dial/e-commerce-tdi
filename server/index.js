@@ -4,6 +4,7 @@ const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const config = require('./config');
+const { testConnection } = require('./database');
 
 const app = express();
 
@@ -61,8 +62,24 @@ app.use('*', (req, res) => {
 
 const PORT = config.port;
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📍 Environment: ${config.nodeEnv}`);
-  console.log(`🌐 API available at: http://localhost:${PORT}/api`);
-});
+// Fonction de démarrage asynchrone
+async function startServer() {
+  try {
+    // Test de la connexion à la base de données
+    await testConnection();
+    
+    // Démarrage du serveur
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+      console.log(`📍 Environment: ${config.nodeEnv}`);
+      console.log(`🌐 API available at: http://localhost:${PORT}/api`);
+      console.log(`💾 Database connection: OK`);
+    });
+  } catch (error) {
+    console.error('❌ Failed to start server:', error.message);
+    process.exit(1);
+  }
+}
+
+// Démarrage
+startServer();
