@@ -103,6 +103,9 @@ export const CartProvider = ({ children }) => {
   };
 
   const updateCart = async (id, quantity) => {
+    if (!user) {
+      return { success: false, error: 'User not authenticated' };
+    }
     try {
       await cartService.update(id, quantity);
       await fetchCart();
@@ -113,6 +116,9 @@ export const CartProvider = ({ children }) => {
   };
 
   const removeFromCart = async (id) => {
+    if (!user) {
+      return { success: false, error: 'User not authenticated' };
+    }
     try {
       await cartService.remove(id);
       await fetchCart();

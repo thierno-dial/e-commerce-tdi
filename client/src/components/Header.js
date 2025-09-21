@@ -4,11 +4,13 @@ import { ShoppingCart } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
 import AuthDialog from './AuthDialog';
+import CartDrawer from './CartDrawer';
 
 const Header = () => {
   const { user, logout, loading } = useAuth();
   const { cart } = useCart();
   const [authOpen, setAuthOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
@@ -38,7 +40,7 @@ const Header = () => {
           </Typography>
           
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <IconButton color="inherit">
+            <IconButton color="inherit" onClick={() => setCartOpen(true)}>
               <Badge badgeContent={cart.count} color="secondary">
                 <ShoppingCart />
               </Badge>
@@ -70,6 +72,7 @@ const Header = () => {
       </AppBar>
 
       <AuthDialog open={authOpen} onClose={() => setAuthOpen(false)} />
+      <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
     </>
   );
 };
