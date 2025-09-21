@@ -39,7 +39,12 @@ export const AuthProvider = ({ children }) => {
       const { user, token } = response.data;
       localStorage.setItem('token', token);
       setUser(user);
-      return { success: true };
+      
+      // Vérifier s'il y a un panier anonyme à migrer
+      const anonymousCart = localStorage.getItem('anonymousCart');
+      const hasAnonymousItems = anonymousCart && JSON.parse(anonymousCart).items.length > 0;
+      
+      return { success: true, hasAnonymousCart: hasAnonymousItems };
     } catch (error) {
       return { success: false, error: error.response?.data?.error || 'Login failed' };
     }
@@ -51,7 +56,12 @@ export const AuthProvider = ({ children }) => {
       const { user, token } = response.data;
       localStorage.setItem('token', token);
       setUser(user);
-      return { success: true };
+      
+      // Vérifier s'il y a un panier anonyme à migrer
+      const anonymousCart = localStorage.getItem('anonymousCart');
+      const hasAnonymousItems = anonymousCart && JSON.parse(anonymousCart).items.length > 0;
+      
+      return { success: true, hasAnonymousCart: hasAnonymousItems };
     } catch (error) {
       return { success: false, error: error.response?.data?.error || 'Registration failed' };
     }

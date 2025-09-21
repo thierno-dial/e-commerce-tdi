@@ -12,6 +12,7 @@ import {
   CircularProgress
 } from '@mui/material';
 import { useAuth } from '../contexts/AuthContext';
+import { useNotification } from '../contexts/NotificationContext';
 
 const AuthDialog = ({ open, onClose }) => {
   const [tab, setTab] = useState(0);
@@ -25,6 +26,7 @@ const AuthDialog = ({ open, onClose }) => {
   });
 
   const { login, register } = useAuth();
+  const { showNotification } = useNotification();
 
   const handleChange = (e) => {
     setFormData({
@@ -59,6 +61,11 @@ const AuthDialog = ({ open, onClose }) => {
           firstName: '',
           lastName: ''
         });
+        
+        // Notification de migration du panier si nécessaire
+        if (result.hasAnonymousCart) {
+          showNotification('Vos articles ont été ajoutés à votre panier !', 'success');
+        }
       } else {
         setError(result.error);
       }

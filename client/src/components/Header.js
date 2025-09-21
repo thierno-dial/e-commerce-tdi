@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { AppBar, Toolbar, Typography, Button, Menu, MenuItem, Chip, Box, CircularProgress } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, Menu, MenuItem, Chip, Box, CircularProgress, Badge, IconButton } from '@mui/material';
+import { ShoppingCart } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
+import { useCart } from '../contexts/CartContext';
 import AuthDialog from './AuthDialog';
 
 const Header = () => {
   const { user, logout, loading } = useAuth();
+  const { cart } = useCart();
   const [authOpen, setAuthOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -34,27 +37,35 @@ const Header = () => {
             Sneakers Store
           </Typography>
           
-          {loading ? (
-            <CircularProgress color="inherit" size={24} />
-          ) : user ? (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Chip 
-                label={getRoleLabel(user.role)} 
-                color={getRoleColor(user.role)} 
-                size="small" 
-              />
-              <Button color="inherit" onClick={handleMenuOpen}>
-                {user.firstName}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <IconButton color="inherit">
+              <Badge badgeContent={cart.count} color="secondary">
+                <ShoppingCart />
+              </Badge>
+            </IconButton>
+            
+            {loading ? (
+              <CircularProgress color="inherit" size={24} />
+            ) : user ? (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Chip 
+                  label={getRoleLabel(user.role)} 
+                  color={getRoleColor(user.role)} 
+                  size="small" 
+                />
+                <Button color="inherit" onClick={handleMenuOpen}>
+                  {user.firstName}
+                </Button>
+                <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+                  <MenuItem onClick={handleLogout}>Déconnexion</MenuItem>
+                </Menu>
+              </Box>
+            ) : (
+              <Button color="inherit" onClick={() => setAuthOpen(true)}>
+                Connexion
               </Button>
-              <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-                <MenuItem onClick={handleLogout}>Déconnexion</MenuItem>
-              </Menu>
-            </Box>
-          ) : (
-            <Button color="inherit" onClick={() => setAuthOpen(true)}>
-              Connexion
-            </Button>
-          )}
+            )}
+          </Box>
         </Toolbar>
       </AppBar>
 

@@ -22,4 +22,11 @@ export const productService = {
   getById: (id) => api.get(`/products/${id}`)
 };
 
+export const cartService = {
+  get: () => api.get('/cart'),
+  add: (productVariantId, quantity = 1) => api.post('/cart', { productVariantId, quantity }),
+  update: (id, quantity) => api.put(`/cart/${id}`, { quantity }),
+  remove: (id) => api.delete(`/cart/${id}`)
+};
+
 export default api;
