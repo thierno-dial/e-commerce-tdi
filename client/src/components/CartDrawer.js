@@ -13,7 +13,7 @@ import {
   Avatar,
   Alert
 } from '@mui/material';
-import { Close, Delete } from '@mui/icons-material';
+import { Close, Delete, Add, Remove } from '@mui/icons-material';
 import ConfirmDialog from './ConfirmDialog';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -32,21 +32,13 @@ const CartDrawer = ({ open, onClose, onLoginRequest }) => {
   const handleQuantityChange = async (itemId, newQuantity) => {
     if (newQuantity < 1) return;
     
-    if (user) {
-      const result = await updateCart(itemId, newQuantity);
-      if (!result.success) {
-        showNotification(result.error, 'error');
-      }
-    } else {
-      showNotification('Connectez-vous pour modifier les quantités', 'info');
+    const result = await updateCart(itemId, newQuantity);
+    if (!result.success) {
+      showNotification(result.error, 'error');
     }
   };
 
   const handleRemoveItemRequest = (item) => {
-    if (!user) {
-      showNotification('Connectez-vous pour supprimer des articles', 'info');
-      return;
-    }
     setItemToRemove(item);
     setConfirmRemoveOpen(true);
   };
@@ -83,7 +75,8 @@ const CartDrawer = ({ open, onClose, onLoginRequest }) => {
         brand: item.ProductVariant?.Product?.brand || '',
         size: item.ProductVariant?.size || '',
         price: item.ProductVariant?.Product?.basePrice || 0,
-        image: item.ProductVariant?.Product?.images?.[0] || null
+        image: item.ProductVariant?.Product?.images?.[0] || null,
+        stock: item.ProductVariant?.stock
       };
     } else {
       return {
@@ -91,7 +84,8 @@ const CartDrawer = ({ open, onClose, onLoginRequest }) => {
         brand: item.productInfo?.brand || '',
         size: item.productInfo?.variant?.size || '',
         price: item.productInfo?.basePrice || 0,
-        image: null
+        image: null,
+        stock: item.productInfo?.variant?.stock
       };
     }
   };
@@ -133,10 +127,15 @@ const CartDrawer = ({ open, onClose, onLoginRequest }) => {
                         <Box>
                           <Typography variant="subtitle2">{info.name}</Typography>
                           <Typography variant="body2" color="text.secondary">
-                            {info.brand} • Taille {info.size}
+                            {info.brand} • Pointure {info.size}
+                            {info.stock !== undefined && (
+                              <span style={{ color: info.stock <= 5 ? '#f44336' : '#666' }}>
+                                {' '}• Stock: {info.stock}
+                              </span>
+                            )}
                           </Typography>
                           <Typography variant="h6" color="primary">
-                            {info.price}€
+                            {parseFloat(info.price).toFixed(2)}€
                           </Typography>
                         </Box>
                       }
@@ -144,16 +143,37 @@ const CartDrawer = ({ open, onClose, onLoginRequest }) => {
                     
                     <ListItemSecondaryAction>
                       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <Typography variant="body2">
-                            Quantité: {item.quantity}
+                        {/* Contrôles de quantité */}
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, border: '1px solid', borderColor: 'grey.300', borderRadius: 1, px: 1, py: 0.5 }}>
+                          <IconButton 
+                            size="small" 
+                            onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                            disabled={loading || item.quantity <= 1}
+                            sx={{ minWidth: 'auto', p: 0.5 }}
+                          >
+                            <Remove fontSize="small" />
+                          </IconButton>
+                          
+                          <Typography variant="body2" sx={{ minWidth: 20, textAlign: 'center' }}>
+                            {item.quantity}
                           </Typography>
+                          
+                          <IconButton 
+                            size="small" 
+                            onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                            disabled={loading || (info.stock !== undefined && item.quantity >= info.stock)}
+                            sx={{ minWidth: 'auto', p: 0.5 }}
+                            title={info.stock !== undefined && item.quantity >= info.stock ? `Stock maximum atteint (${info.stock})` : 'Augmenter la quantité'}
+                          >
+                            <Add fontSize="small" />
+                          </IconButton>
                         </Box>
                         
                         <IconButton 
                           size="small" 
                           color="error"
                           onClick={() => handleRemoveItemRequest(item)}
+                          disabled={loading}
                         >
                           <Delete />
                         </IconButton>

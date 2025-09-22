@@ -100,28 +100,81 @@ export const CartProvider = ({ children }) => {
   };
 
   const updateCart = async (id, quantity) => {
-    if (!user) {
-      return { success: false, error: 'User not authenticated' };
-    }
-    try {
-      await cartService.update(id, quantity);
-      await fetchCart();
+    if (user) {
+      try {
+        await cartService.update(id, quantity);
+        await fetchCart();
+        return { success: true };
+      } catch (error) {
+        return { success: false, error: error.response?.data?.error || 'Failed to update cart' };
+      }
+    } else {
+      // Gestion du panier local pour utilisateurs non connectés
+      if (quantity < 1) {
+        return { success: false, error: 'Quantité invalide' };
+      }
+      
+      const currentCart = getLocalCart();
+      const itemIndex = currentCart.items.findIndex(item => item.id === id);
+      
+      if (itemIndex === -1) {
+        return { success: false, error: 'Article non trouvé' };
+      }
+      
+      // Vérifier le stock disponible si l'information est disponible
+      const item = currentCart.items[itemIndex];
+      const availableStock = item.productInfo?.variant?.stock;
+      if (availableStock !== undefined && quantity > availableStock) {
+        return { success: false, error: `Stock insuffisant. Stock disponible: ${availableStock}` };
+      }
+      
+      // Mettre à jour la quantité
+      currentCart.items[itemIndex].quantity = quantity;
+      
+      // Recalculer les totaux
+      currentCart.count = currentCart.items.reduce((sum, item) => sum + item.quantity, 0);
+      currentCart.total = currentCart.items.reduce((sum, item) => {
+        const price = item.productInfo?.basePrice || 0;
+        return sum + (item.quantity * price);
+      }, 0);
+      
+      saveLocalCart(currentCart);
+      setCart(currentCart);
       return { success: true };
-    } catch (error) {
-      return { success: false, error: error.response?.data?.error || 'Failed to update cart' };
     }
   };
 
   const removeFromCart = async (id) => {
-    if (!user) {
-      return { success: false, error: 'User not authenticated' };
-    }
-    try {
-      await cartService.remove(id);
-      await fetchCart();
+    if (user) {
+      try {
+        await cartService.remove(id);
+        await fetchCart();
+        return { success: true };
+      } catch (error) {
+        return { success: false, error: error.response?.data?.error || 'Failed to remove from cart' };
+      }
+    } else {
+      // Gestion du panier local pour utilisateurs non connectés
+      const currentCart = getLocalCart();
+      const itemIndex = currentCart.items.findIndex(item => item.id === id);
+      
+      if (itemIndex === -1) {
+        return { success: false, error: 'Article non trouvé' };
+      }
+      
+      // Supprimer l'article
+      currentCart.items.splice(itemIndex, 1);
+      
+      // Recalculer les totaux
+      currentCart.count = currentCart.items.reduce((sum, item) => sum + item.quantity, 0);
+      currentCart.total = currentCart.items.reduce((sum, item) => {
+        const price = item.productInfo?.basePrice || 0;
+        return sum + (item.quantity * price);
+      }, 0);
+      
+      saveLocalCart(currentCart);
+      setCart(currentCart);
       return { success: true };
-    } catch (error) {
-      return { success: false, error: error.response?.data?.error || 'Failed to remove from cart' };
     }
   };
 

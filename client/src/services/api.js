@@ -19,7 +19,13 @@ export const authService = {
 
 export const productService = {
   getAll: (params) => api.get('/products', { params }),
-  getById: (id) => api.get(`/products/${id}`)
+  getMyProducts: (params) => api.get('/products/my-products', { params }), // Pour sellers
+  getById: (id) => api.get(`/products/${id}`),
+  create: (productData) => api.post('/products', productData),
+  update: (id, productData) => api.put(`/products/${id}`, productData),
+  delete: (id) => api.delete(`/products/${id}`),
+  updateVariantStock: (variantId, stock) => api.put(`/products/variants/${variantId}/stock`, { stock }),
+  deleteVariant: (variantId) => api.delete(`/products/variants/${variantId}`)
 };
 
 export const cartService = {

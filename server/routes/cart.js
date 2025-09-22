@@ -42,7 +42,9 @@ router.post('/', authenticateToken, async (req, res) => {
     }
 
     if (variant.stock < quantity) {
-      return res.status(400).json({ error: 'Insufficient stock' });
+      return res.status(400).json({ 
+        error: `Stock insuffisant. Stock disponible: ${variant.stock}` 
+      });
     }
 
     const existingItem = await CartItem.findOne({
@@ -52,7 +54,9 @@ router.post('/', authenticateToken, async (req, res) => {
     if (existingItem) {
       const newQuantity = existingItem.quantity + quantity;
       if (variant.stock < newQuantity) {
-        return res.status(400).json({ error: 'Insufficient stock' });
+        return res.status(400).json({ 
+          error: `Stock insuffisant. Stock disponible: ${variant.stock}` 
+        });
       }
       await existingItem.update({ quantity: newQuantity });
     } else {
@@ -88,7 +92,9 @@ router.put('/:id', authenticateToken, async (req, res) => {
     }
 
     if (cartItem.ProductVariant.stock < quantity) {
-      return res.status(400).json({ error: 'Insufficient stock' });
+      return res.status(400).json({ 
+        error: `Stock insuffisant. Stock disponible: ${cartItem.ProductVariant.stock}` 
+      });
     }
 
     await cartItem.update({ quantity });

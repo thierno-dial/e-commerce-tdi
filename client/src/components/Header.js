@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { AppBar, Toolbar, Typography, Button, Menu, MenuItem, Chip, Box, CircularProgress, Badge, IconButton } from '@mui/material';
-import { ShoppingCart, Receipt } from '@mui/icons-material';
+import { ShoppingCart, Receipt, AdminPanelSettings } from '@mui/icons-material';
 import ConfirmDialog from './ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
 import AuthDialog from './AuthDialog';
 import CartDrawer from './CartDrawer';
 
-const Header = ({ onShowOrders, onShowProducts }) => {
+const Header = ({ onShowOrders, onShowProducts, onShowAdmin }) => {
   const { user, logout, loading } = useAuth();
   const { cart } = useCart();
   const [authOpen, setAuthOpen] = useState(false);
@@ -41,14 +41,23 @@ const Header = ({ onShowOrders, onShowProducts }) => {
 
   return (
     <>
-      <AppBar position="static">
+      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
           <Typography 
-            variant="h6" 
-            sx={{ flexGrow: 1, cursor: 'pointer' }}
+            variant="h5" 
+            sx={{ 
+              flexGrow: 1, 
+              cursor: 'pointer',
+              fontWeight: 800,
+              background: 'linear-gradient(45deg, #ffffff 30%, #f39c12 90%)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              letterSpacing: '-0.5px'
+            }}
             onClick={onShowProducts}
           >
-            Sneakers Store
+            SneakZone
           </Typography>
           
                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -58,9 +67,15 @@ const Header = ({ onShowOrders, onShowProducts }) => {
                      </Badge>
                    </IconButton>
                    
-                   {user && (
+                   {user && user.role === 'customer' && (
                      <IconButton color="inherit" onClick={onShowOrders}>
                        <Receipt />
+                     </IconButton>
+                   )}
+                   
+                   {user && ['admin', 'seller'].includes(user.role) && (
+                     <IconButton color="inherit" onClick={onShowAdmin}>
+                       <AdminPanelSettings />
                      </IconButton>
                    )}
             
