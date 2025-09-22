@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ThemeProvider, createTheme, CssBaseline, Container, Typography, Box } from '@mui/material';
 import { AuthProvider } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import Header from './components/Header';
 import ProductCatalog from './components/ProductCatalog';
+import OrdersList from './components/OrdersList';
 
 const theme = createTheme({
   palette: {
@@ -14,23 +15,49 @@ const theme = createTheme({
 });
 
 function App() {
+  const [currentView, setCurrentView] = useState('products');
+
+  const renderContent = () => {
+    switch (currentView) {
+      case 'orders':
+        return (
+          <Box sx={{ mb: 4 }}>
+            <Typography variant="h4" component="h1" gutterBottom>
+              Mes commandes
+            </Typography>
+            <OrdersList />
+          </Box>
+        );
+      case 'products':
+      default:
+        return (
+          <>
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h4" component="h1" gutterBottom>
+                Découvrez nos sneakers
+              </Typography>
+              <Typography variant="body1" color="text.secondary">
+                Collection premium Nike & Adidas
+              </Typography>
+            </Box>
+            <ProductCatalog />
+          </>
+        );
+    }
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <NotificationProvider>
         <AuthProvider>
           <CartProvider>
-            <Header />
+            <Header 
+              onShowOrders={() => setCurrentView('orders')} 
+              onShowProducts={() => setCurrentView('products')}
+            />
             <Container maxWidth="lg" sx={{ mt: 4 }}>
-              <Box sx={{ mb: 4 }}>
-                <Typography variant="h4" component="h1" gutterBottom>
-                  Découvrez nos sneakers
-                </Typography>
-                <Typography variant="body1" color="text.secondary">
-                  Collection premium Nike & Adidas
-                </Typography>
-              </Box>
-              <ProductCatalog />
+              {renderContent()}
             </Container>
           </CartProvider>
         </AuthProvider>

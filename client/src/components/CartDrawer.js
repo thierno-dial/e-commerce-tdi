@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Drawer,
   Box,
@@ -11,18 +11,23 @@ import {
   Button,
   Divider,
   Avatar,
-  TextField,
   Alert
 } from '@mui/material';
-import { Close, Add, Remove, Delete } from '@mui/icons-material';
+import { Close, Delete } from '@mui/icons-material';
+import ConfirmDialog from './ConfirmDialog';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useNotification } from '../contexts/NotificationContext';
+import CheckoutSimple from './CheckoutSimple';
 
-const CartDrawer = ({ open, onClose }) => {
+const CartDrawer = ({ open, onClose, onLoginRequest }) => {
   const { cart, updateCart, removeFromCart, loading } = useCart();
   const { user } = useAuth();
   const { showNotification } = useNotification();
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false);
+  const [itemToRemove, setItemToRemove] = useState(null);
+  const [removeLoading, setRemoveLoading] = useState(false);
 
   const handleQuantityChange = async (itemId, newQuantity) => {
     if (newQuantity < 1) return;
@@ -33,55 +38,46 @@ const CartDrawer = ({ open, onClose }) => {
         showNotification(result.error, 'error');
       }
     } else {
-      // Gestion panier anonyme
-      const currentCart = JSON.parse(localStorage.getItem('anonymousCart') || '{"items":[],"total":0,"count":0}');
-      const itemIndex = currentCart.items.findIndex(item => item.id === itemId);
-      
-      if (itemIndex >= 0) {
-        currentCart.items[itemIndex].quantity = newQuantity;
-        
-        // Recalculer totaux
-        currentCart.count = currentCart.items.reduce((sum, item) => sum + item.quantity, 0);
-        currentCart.total = currentCart.items.reduce((sum, item) => {
-          const price = item.productInfo?.basePrice || 0;
-          return sum + (item.quantity * price);
-        }, 0);
-        
-        localStorage.setItem('anonymousCart', JSON.stringify(currentCart));
-        window.location.reload(); // Force refresh pour mettre à jour le context
-      }
+      showNotification('Connectez-vous pour modifier les quantités', 'info');
     }
   };
 
-  const handleRemoveItem = async (itemId) => {
-    if (user) {
-      const result = await removeFromCart(itemId);
+  const handleRemoveItemRequest = (item) => {
+    if (!user) {
+      showNotification('Connectez-vous pour supprimer des articles', 'info');
+      return;
+    }
+    setItemToRemove(item);
+    setConfirmRemoveOpen(true);
+  };
+
+  const handleRemoveItemConfirm = async () => {
+    if (!itemToRemove) return;
+    
+    try {
+      setRemoveLoading(true);
+      const result = await removeFromCart(itemToRemove.id);
       if (result.success) {
         showNotification('Article supprimé du panier', 'success');
+        setConfirmRemoveOpen(false);
+        setItemToRemove(null);
       } else {
         showNotification(result.error, 'error');
       }
-    } else {
-      // Gestion panier anonyme
-      const currentCart = JSON.parse(localStorage.getItem('anonymousCart') || '{"items":[],"total":0,"count":0}');
-      currentCart.items = currentCart.items.filter(item => item.id !== itemId);
-      
-      // Recalculer totaux
-      currentCart.count = currentCart.items.reduce((sum, item) => sum + item.quantity, 0);
-      currentCart.total = currentCart.items.reduce((sum, item) => {
-        const price = item.productInfo?.basePrice || 0;
-        return sum + (item.quantity * price);
-      }, 0);
-      
-      localStorage.setItem('anonymousCart', JSON.stringify(currentCart));
-      showNotification('Article supprimé du panier', 'success');
-      window.location.reload(); // Force refresh pour mettre à jour le context
+    } catch (error) {
+      showNotification('Erreur lors de la suppression', 'error');
+    } finally {
+      setRemoveLoading(false);
     }
+  };
+
+  const handleRemoveItemCancel = () => {
+    setConfirmRemoveOpen(false);
+    setItemToRemove(null);
   };
 
   const getItemInfo = (item) => {
     if (user) {
-      // Panier serveur
       return {
         name: item.ProductVariant?.Product?.name || 'Produit',
         brand: item.ProductVariant?.Product?.brand || '',
@@ -90,7 +86,6 @@ const CartDrawer = ({ open, onClose }) => {
         image: item.ProductVariant?.Product?.images?.[0] || null
       };
     } else {
-      // Panier anonyme
       return {
         name: item.productInfo?.name || 'Produit',
         brand: item.productInfo?.brand || '',
@@ -104,7 +99,6 @@ const CartDrawer = ({ open, onClose }) => {
   return (
     <Drawer anchor="right" open={open} onClose={onClose}>
       <Box sx={{ width: 400, p: 2 }}>
-        {/* Header */}
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
           <Typography variant="h6">Mon Panier ({cart.count})</Typography>
           <IconButton onClick={onClose}>
@@ -113,8 +107,6 @@ const CartDrawer = ({ open, onClose }) => {
         </Box>
 
         <Divider sx={{ mb: 2 }} />
-
-        {/* Articles */}
         {cart.items.length === 0 ? (
           <Box sx={{ textAlign: 'center', py: 4 }}>
             <Typography variant="body1" color="text.secondary">
@@ -152,40 +144,16 @@ const CartDrawer = ({ open, onClose }) => {
                     
                     <ListItemSecondaryAction>
                       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
-                        {/* Contrôles quantité */}
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <IconButton 
-                            size="small" 
-                            onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
-                            disabled={item.quantity <= 1}
-                          >
-                            <Remove />
-                          </IconButton>
-                          <TextField
-                            size="small"
-                            value={item.quantity}
-                            onChange={(e) => {
-                              const value = parseInt(e.target.value);
-                              if (!isNaN(value) && value > 0) {
-                                handleQuantityChange(item.id, value);
-                              }
-                            }}
-                            sx={{ width: 60 }}
-                            inputProps={{ style: { textAlign: 'center' } }}
-                          />
-                          <IconButton 
-                            size="small" 
-                            onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                          >
-                            <Add />
-                          </IconButton>
+                          <Typography variant="body2">
+                            Quantité: {item.quantity}
+                          </Typography>
                         </Box>
                         
-                        {/* Bouton supprimer */}
                         <IconButton 
                           size="small" 
                           color="error"
-                          onClick={() => handleRemoveItem(item.id)}
+                          onClick={() => handleRemoveItemRequest(item)}
                         >
                           <Delete />
                         </IconButton>
@@ -222,10 +190,10 @@ const CartDrawer = ({ open, onClose }) => {
               disabled={loading}
               onClick={() => {
                 if (!user) {
-                  showNotification('Veuillez vous connecter pour commander', 'warning');
+                  onClose();
+                  onLoginRequest();
                 } else {
-                  showNotification('Redirection vers le checkout...', 'info');
-                  // TODO: Redirection vers checkout
+                  setCheckoutOpen(true);
                 }
               }}
             >
@@ -234,8 +202,28 @@ const CartDrawer = ({ open, onClose }) => {
           </>
         )}
       </Box>
-    </Drawer>
-  );
-};
+        
+        <CheckoutSimple 
+          open={checkoutOpen} 
+          onClose={() => setCheckoutOpen(false)} 
+        />
+
+        <ConfirmDialog
+          open={confirmRemoveOpen}
+          onClose={handleRemoveItemCancel}
+          onConfirm={handleRemoveItemConfirm}
+          title="Supprimer l'article"
+          message={itemToRemove ? 
+            `Êtes-vous sûr de vouloir supprimer "${getItemInfo(itemToRemove).name}" de votre panier ?` : 
+            'Êtes-vous sûr de vouloir supprimer cet article ?'
+          }
+          confirmText="Oui, supprimer"
+          cancelText="Non, conserver"
+          severity="warning"
+          loading={removeLoading}
+        />
+      </Drawer>
+    );
+  };
 
 export default CartDrawer;

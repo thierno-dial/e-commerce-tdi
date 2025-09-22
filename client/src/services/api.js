@@ -29,4 +29,11 @@ export const cartService = {
   remove: (id) => api.delete(`/cart/${id}`)
 };
 
+export const orderService = {
+  create: (orderData) => api.post('/orders', orderData),
+  getAll: () => api.get('/orders'),
+  getById: (id) => api.get(`/orders/${id}`),
+  updateStatus: (id, status) => api.put(`/orders/${id}/status`, { status })
+};
+
 export default api;

@@ -40,7 +40,6 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', token);
       setUser(user);
       
-      // Vérifier s'il y a un panier anonyme à migrer
       const anonymousCart = localStorage.getItem('anonymousCart');
       const hasAnonymousItems = anonymousCart && JSON.parse(anonymousCart).items.length > 0;
       
@@ -57,7 +56,6 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', token);
       setUser(user);
       
-      // Vérifier s'il y a un panier anonyme à migrer
       const anonymousCart = localStorage.getItem('anonymousCart');
       const hasAnonymousItems = anonymousCart && JSON.parse(anonymousCart).items.length > 0;
       

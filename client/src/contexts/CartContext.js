@@ -49,8 +49,7 @@ export const CartProvider = ({ children }) => {
     try {
       setLoading(true);
       
-      // Migrer le panier anonyme si l'utilisateur vient de se connecter
-      await migrateAnonymousCart();
+             await migrateAnonymousCart();
       
       const response = await cartService.get();
       setCart(response.data);
@@ -71,9 +70,8 @@ export const CartProvider = ({ children }) => {
       } catch (error) {
         return { success: false, error: error.response?.data?.error || 'Failed to add to cart' };
       }
-    } else {
-      // Panier anonyme (localStorage)
-      const currentCart = getLocalCart();
+           } else {
+             const currentCart = getLocalCart();
       const existingItemIndex = currentCart.items.findIndex(
         item => item.productVariantId === productVariantId
       );
@@ -86,11 +84,10 @@ export const CartProvider = ({ children }) => {
           productVariantId,
           quantity,
           productInfo
-        });
-      }
+             });
+           }
 
-      // Recalculer total et count
-      currentCart.count = currentCart.items.reduce((sum, item) => sum + item.quantity, 0);
+           currentCart.count = currentCart.items.reduce((sum, item) => sum + item.quantity, 0);
       currentCart.total = currentCart.items.reduce((sum, item) => {
         const price = item.productInfo?.basePrice || 0;
         return sum + (item.quantity * price);
@@ -130,7 +127,7 @@ export const CartProvider = ({ children }) => {
 
   useEffect(() => {
     fetchCart();
-  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [user]);
 
   return (
     <CartContext.Provider value={{

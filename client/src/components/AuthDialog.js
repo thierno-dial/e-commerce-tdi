@@ -14,7 +14,7 @@ import {
 import { useAuth } from '../contexts/AuthContext';
 import { useNotification } from '../contexts/NotificationContext';
 
-const AuthDialog = ({ open, onClose }) => {
+const AuthDialog = ({ open, onClose, message }) => {
   const [tab, setTab] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -42,16 +42,14 @@ const AuthDialog = ({ open, onClose }) => {
 
     try {
       let result;
-      if (tab === 0) {
-        // Login
-        result = await login({
-          email: formData.email,
-          password: formData.password
-        });
-      } else {
-        // Register
-        result = await register(formData);
-      }
+           if (tab === 0) {
+             result = await login({
+               email: formData.email,
+               password: formData.password
+             });
+           } else {
+             result = await register(formData);
+           }
 
       if (result.success) {
         onClose();
@@ -62,7 +60,6 @@ const AuthDialog = ({ open, onClose }) => {
           lastName: ''
         });
         
-        // Notification de migration du panier si nécessaire
         if (result.hasAnonymousCart) {
           showNotification('Vos articles ont été ajoutés à votre panier !', 'success');
         }
@@ -87,6 +84,11 @@ const AuthDialog = ({ open, onClose }) => {
       
       <DialogContent>
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+          {message && (
+            <Alert severity="info" sx={{ mb: 2 }}>
+              {message}
+            </Alert>
+          )}
           {error && (
             <Alert severity="error" sx={{ mb: 2 }}>
               {error}
