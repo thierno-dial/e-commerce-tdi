@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Grid, Card, CardMedia, CardContent, Typography, Button, Chip, Box, CircularProgress, Alert, Select, MenuItem, FormControl, Badge, Fade } from '@mui/material';
+import { Grid, Card, CardMedia, CardContent, Typography, Button, Chip, Box, CircularProgress, Alert, Fade } from '@mui/material';
 import { LocalOffer, Star, ShoppingCart, Inventory2 } from '@mui/icons-material';
 import { productService } from '../services/api';
 import { useCart } from '../contexts/CartContext';
@@ -11,8 +11,6 @@ const ProductCatalog = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedVariants, setSelectedVariants] = useState({});
-  const [variantErrors, setVariantErrors] = useState({});
   
   // États pour les filtres
   const [searchTerm, setSearchTerm] = useState('');
@@ -48,10 +46,6 @@ const ProductCatalog = () => {
     return colors[category] || 'default';
   };
 
-  const handleVariantChange = (productId, variantId) => {
-    setSelectedVariants(prev => ({ ...prev, [productId]: variantId }));
-    setVariantErrors(prev => ({ ...prev, [productId]: false }));
-  };
 
   // Nouvelle fonction pour ouvrir le dialog de sélection de pointure
   const handleAddToCartRequest = (product) => {
@@ -78,12 +72,7 @@ const ProductCatalog = () => {
     setSizeDialogOpen(true);
     
     // Présélectionner la pointure si trouvée
-    if (preselectedVariant) {
-      // Petit délai pour que le dialog se monte avant de présélectionner
-      setTimeout(() => {
-        setSelectedVariants(prev => ({ ...prev, [product.id]: preselectedVariant.id }));
-      }, 100);
-    }
+    // Pas besoin de présélection manuelle, le dialog gère cela automatiquement
   };
 
   // Fonction pour confirmer l'ajout au panier avec la pointure sélectionnée
