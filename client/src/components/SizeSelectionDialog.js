@@ -10,9 +10,7 @@ import {
   CardContent,
   Typography,
   Box,
-  Chip,
-  IconButton,
-  Badge
+  IconButton
 } from '@mui/material';
 import { Close, Inventory2, Add, Remove } from '@mui/icons-material';
 

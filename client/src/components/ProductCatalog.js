@@ -57,22 +57,8 @@ const ProductCatalog = () => {
       return;
     }
 
-    // Déterminer la pointure présélectionnée selon les filtres
-    let preselectedVariant = null;
-    if (sizeFilter.length === 1) {
-      // Si une seule pointure est filtrée, la présélectionner
-      const selectedSizeKey = sizeFilter[0];
-      const [size, sizeType] = selectedSizeKey.split('-');
-      preselectedVariant = availableVariants.find(v => 
-        v.size === size && v.sizeType === sizeType
-      );
-    }
-
     setSelectedProductForSize(product);
     setSizeDialogOpen(true);
-    
-    // Présélectionner la pointure si trouvée
-    // Pas besoin de présélection manuelle, le dialog gère cela automatiquement
   };
 
   // Fonction pour confirmer l'ajout au panier avec la pointure sélectionnée

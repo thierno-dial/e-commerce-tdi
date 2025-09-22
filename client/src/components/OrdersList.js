@@ -25,12 +25,8 @@ import {
   Paper,
   Container,
   Fade,
-  IconButton,
-  Tooltip,
-  Badge,
   CardHeader,
-  CardActions,
-  Collapse
+  CardActions
 } from '@mui/material';
 import {
   ShoppingBag,
@@ -38,8 +34,6 @@ import {
   CheckCircle,
   Cancel,
   Visibility,
-  ExpandMore,
-  ExpandLess,
   CalendarToday,
   Payment,
   LocationOn,
