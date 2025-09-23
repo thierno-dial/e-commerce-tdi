@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { cartService } from '../services/api';
 import { useAuth } from './AuthContext';
 
@@ -26,7 +26,7 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem('anonymousCart', JSON.stringify(cartData));
   };
 
-  const migrateAnonymousCart = async () => {
+  const migrateAnonymousCart = useCallback(async () => {
     const localCart = getLocalCart();
     if (localCart.items.length === 0) return;
 
@@ -39,9 +39,9 @@ export const CartProvider = ({ children }) => {
     } catch (error) {
       console.error('Erreur lors de la migration du panier:', error);
     }
-  };
+  }, []);
 
-  const fetchCart = async () => {
+  const fetchCart = useCallback(async () => {
     if (!user) {
       setCart(getLocalCart());
       return;
@@ -59,7 +59,7 @@ export const CartProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, migrateAnonymousCart]);
 
   const addToCart = async (productVariantId, quantity = 1, productInfo = null) => {
     if (user) {
@@ -180,7 +180,7 @@ export const CartProvider = ({ children }) => {
 
   useEffect(() => {
     fetchCart();
-  }, [user]);
+  }, [user, fetchCart]);
 
   return (
     <CartContext.Provider value={{

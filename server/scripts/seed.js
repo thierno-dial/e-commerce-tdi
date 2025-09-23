@@ -10,7 +10,20 @@ const sneakers = [
 
 const users = [
   { email: 'admin@sneakers.com', password: 'admin123', firstName: 'Admin', lastName: 'User', role: 'admin' },
-  { email: 'seller@sneakers.com', password: 'seller123', firstName: 'Seller', lastName: 'User', role: 'seller' },
+  { 
+    email: 'seller@sneakers.com', 
+    password: 'seller123', 
+    firstName: 'Seller', 
+    lastName: 'User', 
+    role: 'seller',
+    sellerInfo: {
+      businessName: 'Sneakers Premium Store',
+      description: 'Boutique premium de sneakers haut de gamme',
+      phone: '+33 1 23 45 67 89',
+      address: '123 Rue de la Mode, 75001 Paris'
+    },
+    seller_status: 'approved'
+  },
   { email: 'customer@sneakers.com', password: 'customer123', firstName: 'Customer', lastName: 'User', role: 'customer' }
 ];
 
@@ -23,13 +36,27 @@ async function seed() {
     await Product.destroy({ where: {}, force: true });
     await User.destroy({ where: {}, force: true });
     
+    // Créer les utilisateurs
+    const createdUsers = [];
     for (const userData of users) {
-      await User.create(userData);
+      const user = await User.create(userData);
+      createdUsers.push(user);
     }
+    
+    // Récupérer le seller pour associer les produits
+    const seller = createdUsers.find(user => user.role === 'seller');
     
     for (const sneaker of sneakers) {
       const { sizes, ...productData } = sneaker;
-      const product = await Product.create(productData);
+      
+      // Associer le produit au seller et ajouter les champs requis
+      const product = await Product.create({
+        ...productData,
+        sellerId: seller.id,
+        sellerProductCode: `${sneaker.brand.toUpperCase().substring(0, 3)}-${Date.now()}`,
+        commissionRate: 0.15, // 15% de commission
+        isActive: true
+      });
       
       const variants = sizes.map(size => ({
         productId: product.id,
@@ -42,9 +69,12 @@ async function seed() {
       await ProductVariant.bulkCreate(variants);
     }
     
-    console.log('Seeding completed');
+    console.log('✅ Seeding completed successfully!');
+    console.log(`📊 Created: ${users.length} users, ${sneakers.length} products`);
+    console.log(`🏪 Seller: ${seller.sellerInfo.businessName}`);
   } catch (error) {
-    console.error('Seeding failed:', error);
+    console.error('❌ Seeding failed:', error);
+    throw error;
   }
 }
 
