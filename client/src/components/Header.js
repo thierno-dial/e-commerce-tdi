@@ -7,7 +7,7 @@ import { useCart } from '../contexts/CartContext';
 import AuthDialog from './AuthDialog';
 import CartDrawer from './CartDrawer';
 
-const Header = ({ onShowOrders, onShowProducts, onShowAdmin }) => {
+const Header = ({ onShowOrders, onShowProducts, onShowAdmin, onNavigateHome }) => {
   const { user, logout, loading } = useAuth();
   const { cart } = useCart();
   const [authOpen, setAuthOpen] = useState(false);
@@ -25,7 +25,12 @@ const Header = ({ onShowOrders, onShowProducts, onShowAdmin }) => {
   };
 
   const handleLogoutConfirm = () => {
-    logout();
+    logout(() => {
+      // Rediriger vers la page d'accueil après déconnexion
+      if (onNavigateHome) {
+        onNavigateHome();
+      }
+    });
     setConfirmLogoutOpen(false);
   };
 

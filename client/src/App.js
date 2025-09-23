@@ -241,6 +241,7 @@ const AppContent = () => {
         onShowAdmin={() => navigateTo('admin')}
         onShowPrivacy={() => navigateTo('privacy')}
         onShowLegal={() => navigateTo('legal')}
+        onNavigateHome={() => navigateTo('home')}
       />
       {/* Espacement pour le header fixe */}
       <Toolbar />
