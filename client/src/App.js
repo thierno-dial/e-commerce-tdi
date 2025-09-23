@@ -3,8 +3,12 @@ import { ThemeProvider, createTheme, CssBaseline, Container, Typography, Box, To
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import { NotificationProvider } from './contexts/NotificationContext';
+import { FiltersProvider } from './contexts/FiltersContext';
+import AuthFiltersSync from './components/AuthFiltersSync';
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
+import FeaturedProducts from './components/FeaturedProducts';
+import AnimatedBackground from './components/AnimatedBackground';
 import ProductCatalog from './components/ProductCatalog';
 import OrdersList from './components/OrdersList';
 import AdminDashboard from './components/AdminDashboard';
@@ -205,13 +209,32 @@ const AppContent = () => {
       default:
         return (
           <>
-            <HeroSection onShopNow={() => {
-              // Scroll vers le catalogue
-              const catalogElement = document.getElementById('product-catalog');
-              if (catalogElement) {
-                catalogElement.scrollIntoView({ behavior: 'smooth' });
-              }
-            }} />
+            <HeroSection 
+              onShopNow={() => {
+                // Scroll vers le catalogue
+                const catalogElement = document.getElementById('product-catalog');
+                if (catalogElement) {
+                  catalogElement.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              onShowOffers={() => {
+                // Scroll vers le catalogue avec focus sur les nouveautés
+                const catalogElement = document.getElementById('product-catalog');
+                if (catalogElement) {
+                  catalogElement.scrollIntoView({ behavior: 'smooth' });
+                  // TODO: Filtrer par nouveautés quand cette fonctionnalité sera implémentée
+                }
+              }}
+            />
+            <FeaturedProducts 
+              onProductClick={(product) => {
+                // Scroll vers le catalogue et éventuellement filtrer par le produit sélectionné
+                const catalogElement = document.getElementById('product-catalog');
+                if (catalogElement) {
+                  catalogElement.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+            />
             <Container maxWidth="lg" sx={{ py: 6 }} id="product-catalog">
               <Box sx={{ mb: 4, textAlign: 'center' }}>
                 <Typography variant="h3" component="h2" gutterBottom sx={{ fontWeight: 700 }}>
@@ -275,7 +298,12 @@ function App() {
       <NotificationProvider>
         <AuthProvider>
           <CartProvider>
-            <AppContent />
+            <FiltersProvider>
+              <AuthFiltersSync>
+                <AnimatedBackground />
+                <AppContent />
+              </AuthFiltersSync>
+            </FiltersProvider>
           </CartProvider>
         </AuthProvider>
       </NotificationProvider>

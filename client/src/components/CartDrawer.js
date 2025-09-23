@@ -35,7 +35,6 @@ const CartDrawer = ({ open, onClose, onLoginRequest }) => {
   const [removeLoading, setRemoveLoading] = useState(false);
 
   const handleQuantityChange = async (itemId, newQuantity) => {
-    console.log('handleQuantityChange called:', { itemId, newQuantity });
     if (newQuantity < 1) return;
     
     const result = await updateCart(itemId, newQuantity);
@@ -254,7 +253,6 @@ const CartDrawer = ({ open, onClose, onLoginRequest }) => {
                           variant="contained"
                           size="small"
                           onClick={() => {
-                            console.log('Bouton - cliqué', { itemId: item.id, quantity: item.quantity });
                             handleQuantityChange(item.id, item.quantity - 1);
                           }}
                           disabled={loading || item.quantity <= 1}
@@ -287,7 +285,6 @@ const CartDrawer = ({ open, onClose, onLoginRequest }) => {
                           variant="contained"
                           size="small"
                           onClick={() => {
-                            console.log('Bouton + cliqué', { itemId: item.id, quantity: item.quantity });
                             handleQuantityChange(item.id, item.quantity + 1);
                           }}
                           disabled={loading || (info.stock !== undefined && item.quantity >= info.stock)}
@@ -311,7 +308,6 @@ const CartDrawer = ({ open, onClose, onLoginRequest }) => {
                         variant="contained"
                         size="small"
                         onClick={() => {
-                          console.log('Bouton supprimer cliqué', { itemId: item.id });
                           handleRemoveItemRequest(item);
                         }}
                         disabled={loading}
@@ -381,7 +377,6 @@ const CartDrawer = ({ open, onClose, onLoginRequest }) => {
                 size="large"
                 disabled={loading}
                 onClick={(e) => {
-                  console.log('Bouton Commander cliqué');
                   e.stopPropagation();
                   if (!user) {
                     onClose();

@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Typography, Button, Container, Grid, Chip } from '@mui/material';
 import { ShoppingBag, TrendingUp, Verified } from '@mui/icons-material';
 
-const HeroSection = ({ onShopNow }) => {
+const HeroSection = ({ onShopNow, onShowOffers }) => {
   return (
     <Box
       component="section"
@@ -72,16 +72,17 @@ const HeroSection = ({ onShopNow }) => {
                   lineHeight: 1.6
                 }}
               >
-                SoleHub, votre marketplace de sneakers authentiques. 
-                Nike, Adidas, Jordan et plus encore. Authenticité garantie, livraison express.
+                <strong>100+ références</strong> pour <strong>Hommes, Femmes & Enfants</strong>. 
+                Gestion professionnelle des stocks par taille (EU, UK, US). 
+                Des marques iconiques aux labels émergents. Qualité e-commerce premium.
               </Typography>
               
               {/* Points clés */}
               <Box sx={{ display: 'flex', gap: 3, mb: 4, flexWrap: 'wrap' }}>
                 {[
-                  { icon: <Verified />, text: 'Authenticité garantie' },
-                  { icon: <ShoppingBag />, text: 'Livraison gratuite' },
-                  { icon: <TrendingUp />, text: 'Dernières tendances' }
+                  { icon: <Verified />, text: '3 catégories' },
+                  { icon: <ShoppingBag />, text: 'Stock temps réel' },
+                  { icon: <TrendingUp />, text: 'Toutes tailles' }
                 ].map((item, index) => (
                   <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <Box sx={{ color: '#ffd700' }}>{item.icon}</Box>
@@ -120,7 +121,8 @@ const HeroSection = ({ onShopNow }) => {
                 <Button
                   variant="outlined"
                   size="large"
-                  aria-label="Découvrir nos marques partenaires Nike et Adidas"
+                  onClick={onShowOffers}
+                  aria-label="Voir les offres spéciales et nouveautés"
                   sx={{
                     borderColor: 'white',
                     color: 'white',
@@ -132,11 +134,13 @@ const HeroSection = ({ onShopNow }) => {
                     '&:hover': {
                       borderColor: '#ffd700',
                       color: '#ffd700',
-                      backgroundColor: 'rgba(255, 215, 0, 0.1)'
+                      backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 8px 25px rgba(255, 215, 0, 0.2)'
                     }
                   }}
                 >
-                  Nos marques
+                  🔥 Nouveautés
                 </Button>
               </Box>
             </Box>
@@ -210,6 +214,125 @@ const HeroSection = ({ onShopNow }) => {
             </Box>
           </Grid>
         </Grid>
+      </Container>
+      
+      {/* Section Statistiques */}
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Grid container spacing={4} justifyContent="center">
+          <Grid item xs={6} md={3} textAlign="center">
+            <Typography variant="h3" sx={{ fontWeight: 800, color: '#ffd700', mb: 1 }}>
+              100+
+            </Typography>
+            <Typography variant="body2" sx={{ opacity: 0.8 }}>
+              Références
+            </Typography>
+          </Grid>
+          <Grid item xs={6} md={3} textAlign="center">
+            <Typography variant="h3" sx={{ fontWeight: 800, color: '#ffd700', mb: 1 }}>
+              3
+            </Typography>
+            <Typography variant="body2" sx={{ opacity: 0.8 }}>
+              Catégories
+            </Typography>
+          </Grid>
+          <Grid item xs={6} md={3} textAlign="center">
+            <Typography variant="h3" sx={{ fontWeight: 800, color: '#ffd700', mb: 1 }}>
+              24/7
+            </Typography>
+            <Typography variant="body2" sx={{ opacity: 0.8 }}>
+              Stock temps réel
+            </Typography>
+          </Grid>
+          <Grid item xs={6} md={3} textAlign="center">
+            <Typography variant="h3" sx={{ fontWeight: 800, color: '#ffd700', mb: 1 }}>
+              RGPD
+            </Typography>
+            <Typography variant="body2" sx={{ opacity: 0.8 }}>
+              Conformité
+            </Typography>
+          </Grid>
+        </Grid>
+      </Container>
+      
+      {/* Section Catégories */}
+      <Container maxWidth="lg" sx={{ py: 6, textAlign: 'center' }}>
+        <Typography variant="h4" sx={{ fontWeight: 700, mb: 4, color: 'white' }}>
+          Pour Toute la Famille
+        </Typography>
+        <Box sx={{ display: 'flex', gap: 3, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <Box sx={{ 
+            flex: '1 1 300px',
+            maxWidth: '350px',
+            minWidth: '280px',
+            p: 3, 
+            borderRadius: 3, 
+            bgcolor: 'rgba(255, 255, 255, 0.1)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              transform: 'translateY(-5px)',
+              bgcolor: 'rgba(255, 255, 255, 0.15)',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
+            }
+          }}>
+            <Typography variant="h2" sx={{ mb: 2 }}>👩</Typography>
+            <Typography variant="h5" sx={{ fontWeight: 700, mb: 2, color: 'white' }}>
+              Femmes
+            </Typography>
+            <Typography variant="body2" sx={{ opacity: 0.9, color: 'white' }}>
+              Style et confort réunis
+            </Typography>
+          </Box>
+          <Box sx={{ 
+            flex: '1 1 300px',
+            maxWidth: '350px',
+            minWidth: '280px',
+            p: 3, 
+            borderRadius: 3, 
+            bgcolor: 'rgba(255, 255, 255, 0.1)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              transform: 'translateY(-5px)',
+              bgcolor: 'rgba(255, 255, 255, 0.15)',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
+            }
+          }}>
+            <Typography variant="h2" sx={{ mb: 2 }}>👨</Typography>
+            <Typography variant="h5" sx={{ fontWeight: 700, mb: 2, color: 'white' }}>
+              Hommes
+            </Typography>
+            <Typography variant="body2" sx={{ opacity: 0.9, color: 'white' }}>
+              Sneakers urbaines et sportives
+            </Typography>
+          </Box>
+          <Box sx={{ 
+            flex: '1 1 300px',
+            maxWidth: '350px',
+            minWidth: '280px',
+            p: 3, 
+            borderRadius: 3, 
+            bgcolor: 'rgba(255, 255, 255, 0.1)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              transform: 'translateY(-5px)',
+              bgcolor: 'rgba(255, 255, 255, 0.15)',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
+            }
+          }}>
+            <Typography variant="h2" sx={{ mb: 2 }}>🧒</Typography>
+            <Typography variant="h5" sx={{ fontWeight: 700, mb: 2, color: 'white' }}>
+              Enfants
+            </Typography>
+            <Typography variant="body2" sx={{ opacity: 0.9, color: 'white' }}>
+              Qualité et sécurité
+            </Typography>
+          </Box>
+        </Box>
       </Container>
     </Box>
   );
