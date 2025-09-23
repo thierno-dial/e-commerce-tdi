@@ -32,7 +32,8 @@ export const cartService = {
   get: () => api.get('/cart'),
   add: (productVariantId, quantity = 1) => api.post('/cart', { productVariantId, quantity }),
   update: (id, quantity) => api.put(`/cart/${id}`, { quantity }),
-  remove: (id) => api.delete(`/cart/${id}`)
+  remove: (id) => api.delete(`/cart/${id}`),
+  clear: () => api.delete('/cart/clear')
 };
 
 export const orderService = {

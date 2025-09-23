@@ -178,6 +178,24 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  const clearCart = async () => {
+    if (user) {
+      try {
+        await cartService.clear();
+        await fetchCart();
+        return { success: true };
+      } catch (error) {
+        console.error('Erreur lors du vidage du panier:', error);
+        return { success: false, error: error.response?.data?.error || 'Failed to clear cart' };
+      }
+    } else {
+      const emptyCart = { items: [], total: 0, count: 0 };
+      saveLocalCart(emptyCart);
+      setCart(emptyCart);
+      return { success: true };
+    }
+  };
+
   useEffect(() => {
     fetchCart();
   }, [user, fetchCart]);
@@ -189,6 +207,7 @@ export const CartProvider = ({ children }) => {
       addToCart,
       updateCart,
       removeFromCart,
+      clearCart,
       fetchCart
     }}>
       {children}

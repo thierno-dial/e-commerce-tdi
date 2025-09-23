@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Drawer,
   Box,
@@ -13,29 +13,48 @@ import ConfirmDialog from './ConfirmDialog';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useNotification } from '../contexts/NotificationContext';
+import { useCartTimer } from '../contexts/CartTimerContext';
 import CheckoutSimple from './CheckoutSimple';
+import HeaderCartTimer from './HeaderCartTimer';
 
-const CartDrawer = ({ open, onClose, onLoginRequest }) => {
+const CartDrawer = ({ open, onClose, onLoginRequest, autoCheckout = false, onCheckoutStart }) => {
   const { cart, updateCart, removeFromCart, loading } = useCart();
   const { user } = useAuth();
   const { showNotification } = useNotification();
+  const { updateActivity } = useCartTimer();
   const [checkoutOpen, setCheckoutOpen] = useState(false);
 
   const handleCheckoutCancel = () => {
     setCheckoutOpen(false);
-    // Le panier reste ouvert, pas besoin de faire quoi que ce soit d'autre
+    // Les articles restent dans le panier avec le timer qui continue
   };
 
   const handleCheckoutSuccess = () => {
     setCheckoutOpen(false);
     onClose(); // Fermer le panier après une commande réussie
   };
+
+  // Déclencher automatiquement le checkout si demandé
+  useEffect(() => {
+    if (autoCheckout && open && cart.items.length > 0 && user) {
+      console.log('🚀 Auto-checkout déclenché depuis le timer');
+      setCheckoutOpen(true);
+      if (onCheckoutStart) {
+        onCheckoutStart();
+      }
+    } else if (autoCheckout && open && cart.items.length > 0 && !user) {
+      // Si pas connecté, demander la connexion
+      console.log('🔐 Auto-checkout: demande de connexion');
+      onLoginRequest();
+    }
+  }, [autoCheckout, open, cart.items.length, user, onCheckoutStart, onLoginRequest]);
   const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false);
   const [itemToRemove, setItemToRemove] = useState(null);
   const [removeLoading, setRemoveLoading] = useState(false);
 
   const handleQuantityChange = async (itemId, newQuantity) => {
     if (newQuantity < 1) return;
+    updateActivity(); // Mettre à jour l'activité utilisateur
     
     const result = await updateCart(itemId, newQuantity);
     if (!result.success) {
@@ -44,6 +63,7 @@ const CartDrawer = ({ open, onClose, onLoginRequest }) => {
   };
 
   const handleRemoveItemRequest = (item) => {
+    updateActivity(); // Mettre à jour l'activité utilisateur
     setItemToRemove(item);
     setConfirmRemoveOpen(true);
   };
@@ -135,18 +155,35 @@ const CartDrawer = ({ open, onClose, onLoginRequest }) => {
                 </Typography>
               </Box>
             </Box>
-            <IconButton 
-              onClick={onClose}
-              sx={{ 
-                color: 'white',
-                bgcolor: 'rgba(255,255,255,0.1)',
-                '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' }
-              }}
-            >
-              <Close />
-            </IconButton>
+            
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              {/* Timer du panier dans le drawer */}
+              <Box sx={{ 
+                bgcolor: 'rgba(255,255,255,0.15)',
+                borderRadius: 2,
+                px: 1.5,
+                py: 0.5,
+                display: 'flex',
+                alignItems: 'center'
+              }}>
+                <HeaderCartTimer />
+              </Box>
+              
+              <IconButton 
+                onClick={onClose}
+                sx={{ 
+                  color: 'white',
+                  bgcolor: 'rgba(255,255,255,0.1)',
+                  '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' }
+                }}
+              >
+                <Close />
+              </IconButton>
+            </Box>
           </Box>
         </Box>
+        
+        
         {cart.items.length === 0 ? (
           <Box sx={{ 
             flex: 1, 

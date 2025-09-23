@@ -4,10 +4,10 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { FiltersProvider } from './contexts/FiltersContext';
+import { CartTimerProvider } from './contexts/CartTimerContext';
 import AuthFiltersSync from './components/AuthFiltersSync';
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
-import FeaturedProducts from './components/FeaturedProducts';
 import AnimatedBackground from './components/AnimatedBackground';
 import ProductCatalog from './components/ProductCatalog';
 import OrdersList from './components/OrdersList';
@@ -226,16 +226,7 @@ const AppContent = () => {
                 }
               }}
             />
-            <FeaturedProducts 
-              onProductClick={(product) => {
-                // Scroll vers le catalogue et éventuellement filtrer par le produit sélectionné
-                const catalogElement = document.getElementById('product-catalog');
-                if (catalogElement) {
-                  catalogElement.scrollIntoView({ behavior: 'smooth' });
-                }
-              }}
-            />
-            <Container maxWidth="lg" sx={{ py: 6 }} id="product-catalog">
+            <Container maxWidth="lg" sx={{ py: 8 }} id="product-catalog">
               <Box sx={{ mb: 4, textAlign: 'center' }}>
                 <Typography variant="h3" component="h2" gutterBottom sx={{ fontWeight: 700 }}>
                   Notre Collection
@@ -286,6 +277,7 @@ const AppContent = () => {
       
       {/* Bandeau de cookies RGPD */}
       <CookieBanner />
+      
     </>
   );
 };
@@ -298,12 +290,14 @@ function App() {
       <NotificationProvider>
         <AuthProvider>
           <CartProvider>
-            <FiltersProvider>
-              <AuthFiltersSync>
-                <AnimatedBackground />
-                <AppContent />
-              </AuthFiltersSync>
-            </FiltersProvider>
+            <CartTimerProvider>
+              <FiltersProvider>
+                <AuthFiltersSync>
+                  <AnimatedBackground />
+                  <AppContent />
+                </AuthFiltersSync>
+              </FiltersProvider>
+            </CartTimerProvider>
           </CartProvider>
         </AuthProvider>
       </NotificationProvider>

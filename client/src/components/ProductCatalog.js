@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Grid, Card, CardMedia, CardContent, Typography, Button, Chip, Box, CircularProgress, Alert, Fade, Pagination, Stack } from '@mui/material';
 import { LocalOffer, ShoppingCart, Inventory2 } from '@mui/icons-material';
 import { productService } from '../services/api';
-import { useCart } from '../contexts/CartContext';
+import useCartWithTimer from '../hooks/useCartWithTimer';
 import { useNotification } from '../contexts/NotificationContext';
 import { useFilters } from '../contexts/FiltersContext';
 import ProductFilters from './ProductFilters';
@@ -22,7 +22,7 @@ const ProductCatalog = () => {
   const [selectedProductForSize, setSelectedProductForSize] = useState(null);
   const [addToCartLoading, setAddToCartLoading] = useState(false);
   
-  const { addToCart } = useCart();
+  const { addToCart } = useCartWithTimer();
   const { showNotification } = useNotification();
   
   // Utilisation du contexte des filtres

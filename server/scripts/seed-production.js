@@ -68,8 +68,8 @@ const readAllCSVFiles = async () => {
 const usersData = [
   // ADMIN
   {
-    firstName: 'Admin',
-    lastName: 'SoleHub',
+    firstName: 'Fatoumata',
+    lastName: 'Bah',
     email: 'admin@solehub.com',
     password: 'SoleHub2025!Admin',
     role: 'admin'

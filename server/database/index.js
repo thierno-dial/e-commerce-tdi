@@ -30,12 +30,14 @@ const ProductVariant = require('./models/ProductVariant')(sequelize);
 const Order = require('./models/Order')(sequelize);
 const OrderItem = require('./models/OrderItem')(sequelize);
 const CartItem = require('./models/CartItem')(sequelize);
+const StockReservation = require('./models/StockReservation')(sequelize);
 
 const setupAssociations = () => {
   // User associations
   User.hasMany(Order, { foreignKey: 'user_id' });
   User.hasMany(CartItem, { foreignKey: 'user_id' });
   User.hasMany(Product, { foreignKey: 'seller_id', as: 'SellerProducts' });
+  User.hasMany(StockReservation, { foreignKey: 'userId', as: 'Reservations' });
   
   // Product associations
   Product.hasMany(ProductVariant, { foreignKey: 'product_id' });
@@ -45,6 +47,7 @@ const setupAssociations = () => {
   ProductVariant.belongsTo(Product, { foreignKey: 'product_id' });
   ProductVariant.hasMany(OrderItem, { foreignKey: 'product_variant_id' });
   ProductVariant.hasMany(CartItem, { foreignKey: 'product_variant_id' });
+  ProductVariant.hasMany(StockReservation, { foreignKey: 'productVariantId', as: 'Reservations' });
   
   // Order associations
   Order.belongsTo(User, { foreignKey: 'user_id' });
@@ -57,6 +60,10 @@ const setupAssociations = () => {
   // CartItem associations
   CartItem.belongsTo(User, { foreignKey: 'user_id' });
   CartItem.belongsTo(ProductVariant, { foreignKey: 'product_variant_id' });
+  
+  // StockReservation associations
+  StockReservation.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+  StockReservation.belongsTo(ProductVariant, { foreignKey: 'productVariantId', as: 'productVariant' });
 };
 
 setupAssociations();
@@ -77,5 +84,6 @@ module.exports = {
   Order,
   OrderItem,
   CartItem,
+  StockReservation,
   testConnection
 };
