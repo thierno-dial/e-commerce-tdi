@@ -9,7 +9,7 @@ const HeroSection = ({ onShopNow }) => {
       role="banner"
       aria-label="Section d'accueil avec présentation de la collection sneakers"
       sx={{
-        background: 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)',
+        background: 'linear-gradient(135deg, #1a1a1a 0%, #2d3748 100%)',
         color: 'white',
         py: { xs: 8, md: 12 },
         position: 'relative',
@@ -34,7 +34,7 @@ const HeroSection = ({ onShopNow }) => {
                 icon={<TrendingUp />}
                 label="Collection Automne 2025"
                 sx={{
-                  backgroundColor: 'rgba(231, 76, 60, 0.9)',
+                  backgroundColor: 'rgba(255, 107, 53, 0.9)',
                   color: 'white',
                   fontWeight: 600,
                   mb: 3,
@@ -49,16 +49,17 @@ const HeroSection = ({ onShopNow }) => {
                   fontSize: { xs: '2.5rem', md: '3.5rem', lg: '4rem' },
                   fontWeight: 800,
                   mb: 2,
-                  background: 'linear-gradient(45deg, #ffffff 30%, #f39c12 90%)',
+                  background: 'linear-gradient(45deg, #ffffff 30%, #ffd700 90%)',
                   backgroundClip: 'text',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
-                  lineHeight: 1.1
+                  lineHeight: 1.1,
+                  fontFamily: '"Poppins", "Inter", sans-serif'
                 }}
               >
                 Sneakers
                 <br />
-                <span style={{ color: '#f39c12' }}>Premium</span>
+                <span style={{ color: '#ffd700' }}>Authentiques</span>
               </Typography>
               
               <Typography
@@ -71,8 +72,8 @@ const HeroSection = ({ onShopNow }) => {
                   lineHeight: 1.6
                 }}
               >
-                Découvrez notre collection exclusive de sneakers Nike & Adidas. 
-                Authenticité garantie, livraison rapide, satisfaction 100%.
+                SoleHub, votre marketplace de sneakers authentiques. 
+                Nike, Adidas, Jordan et plus encore. Authenticité garantie, livraison express.
               </Typography>
               
               {/* Points clés */}
@@ -83,7 +84,7 @@ const HeroSection = ({ onShopNow }) => {
                   { icon: <TrendingUp />, text: 'Dernières tendances' }
                 ].map((item, index) => (
                   <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Box sx={{ color: '#f39c12' }}>{item.icon}</Box>
+                    <Box sx={{ color: '#ffd700' }}>{item.icon}</Box>
                     <Typography variant="body2" sx={{ fontWeight: 500 }}>
                       {item.text}
                     </Typography>
@@ -99,7 +100,7 @@ const HeroSection = ({ onShopNow }) => {
                   onClick={onShopNow}
                   aria-label="Découvrir notre collection de sneakers premium"
                   sx={{
-                    backgroundColor: '#e74c3c',
+                    backgroundColor: '#ff6b35',
                     color: 'white',
                     px: 4,
                     py: 1.5,
@@ -107,9 +108,9 @@ const HeroSection = ({ onShopNow }) => {
                     fontWeight: 600,
                     borderRadius: '12px',
                     '&:hover': {
-                      backgroundColor: '#c0392b',
+                      backgroundColor: '#e64a19',
                       transform: 'translateY(-2px)',
-                      boxShadow: '0 8px 25px rgba(231, 76, 60, 0.3)'
+                      boxShadow: '0 8px 25px rgba(255, 107, 53, 0.3)'
                     }
                   }}
                 >
@@ -129,9 +130,9 @@ const HeroSection = ({ onShopNow }) => {
                     fontWeight: 600,
                     borderRadius: '12px',
                     '&:hover': {
-                      borderColor: '#f39c12',
-                      color: '#f39c12',
-                      backgroundColor: 'rgba(243, 156, 18, 0.1)'
+                      borderColor: '#ffd700',
+                      color: '#ffd700',
+                      backgroundColor: 'rgba(255, 215, 0, 0.1)'
                     }
                   }}
                 >
@@ -180,8 +181,8 @@ const HeroSection = ({ onShopNow }) => {
                 <Chip
                   label="Nouveau"
                   sx={{
-                    backgroundColor: '#f39c12',
-                    color: 'white',
+                    backgroundColor: '#ffd700',
+                    color: '#1a1a1a',
                     fontWeight: 600,
                     fontSize: '0.8rem'
                   }}
@@ -199,7 +200,7 @@ const HeroSection = ({ onShopNow }) => {
                 <Chip
                   label="-20%"
                   sx={{
-                    backgroundColor: '#e74c3c',
+                    backgroundColor: '#ff6b35',
                     color: 'white',
                     fontWeight: 600,
                     fontSize: '0.9rem'

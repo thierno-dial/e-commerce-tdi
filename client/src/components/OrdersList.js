@@ -37,7 +37,10 @@ import {
   CalendarToday,
   Payment,
   LocationOn,
-  Inventory2
+  Inventory2,
+  CreditCard,
+  AccountBalanceWallet,
+  LocalAtm
 } from '@mui/icons-material';
 import ConfirmDialog from './ConfirmDialog';
 import { orderService } from '../services/api';
@@ -148,6 +151,21 @@ const OrdersList = () => {
       cancelled: <Cancel sx={{ fontSize: '1rem' }} />
     };
     return icons[status] || <ShoppingBag sx={{ fontSize: '1rem' }} />;
+  };
+
+  const getPaymentIcon = (paymentMethod) => {
+    const method = paymentMethod?.toLowerCase() || '';
+    if (method.includes('card') || method.includes('carte')) {
+      return <CreditCard sx={{ fontSize: '1.2rem', color: 'info.main' }} />;
+    }
+    if (method.includes('paypal')) {
+      return <AccountBalanceWallet sx={{ fontSize: '1.2rem', color: 'info.main' }} />;
+    }
+    if (method.includes('cash') || method.includes('espèces')) {
+      return <LocalAtm sx={{ fontSize: '1.2rem', color: 'info.main' }} />;
+    }
+    // Icône par défaut pour les paiements
+    return <Payment sx={{ fontSize: '1.2rem', color: 'info.main' }} />;
   };
 
   const canCancelOrder = (order) => {
@@ -268,11 +286,11 @@ const OrdersList = () => {
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
           <ShoppingBag sx={{ fontSize: '2.5rem' }} />
           <Typography variant="h4" sx={{ fontWeight: 700 }}>
-            Mes Commandes
+            📦 Historique des Commandes
           </Typography>
         </Box>
         <Typography variant="h6" sx={{ opacity: 0.9, fontWeight: 400 }}>
-          {getFilteredOrders().length} commande{getFilteredOrders().length > 1 ? 's' : ''} 
+          {getFilteredOrders().length} commande{getFilteredOrders().length > 1 ? 's' : ''} trouvée{getFilteredOrders().length > 1 ? 's' : ''} 
           {orders.length !== getFilteredOrders().length && ` sur ${orders.length} au total`}
         </Typography>
       </Paper>
@@ -289,7 +307,7 @@ const OrdersList = () => {
         }}
       >
         <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-          🔍 Filtrer mes commandes
+          🔍 Filtres
         </Typography>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={4}>
@@ -367,21 +385,23 @@ const OrdersList = () => {
       </Paper>
 
       {/* Liste des commandes avec design moderne */}
-      <Grid container spacing={3}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, alignItems: 'center' }}>
         {getFilteredOrders().map((order, index) => (
-          <Grid item xs={12} key={order.id}>
-            <Fade in={true} timeout={300 + index * 100}>
-              <Card 
-                sx={{ 
-                  borderRadius: '16px',
-                  overflow: 'visible',
-                  boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-                  transition: 'all 0.3s ease-in-out',
-                  '&:hover': {
-                    boxShadow: '0 8px 30px rgba(0,0,0,0.12)',
-                    transform: 'translateY(-2px)'
-                  }
-                }}
+          <Fade in={true} timeout={300 + index * 100} key={order.id}>
+            <Card 
+              sx={{ 
+                borderRadius: '16px',
+                overflow: 'visible',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                transition: 'all 0.3s ease-in-out',
+                width: '100%',
+                maxWidth: '800px',
+                minWidth: { xs: '100%', sm: '600px' },
+                '&:hover': {
+                  boxShadow: '0 8px 30px rgba(0,0,0,0.12)',
+                  transform: 'translateY(-2px)'
+                }
+              }}
               >
                 <CardHeader
                   avatar={
@@ -415,19 +435,29 @@ const OrdersList = () => {
                     </Typography>
                   }
                   subheader={
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
-                      <CalendarToday sx={{ fontSize: '1rem', color: 'text.secondary' }} />
-                      <Typography variant="body2" color="text.secondary">
-                        {formatDate(order.createdAt)}
-                      </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1, flexWrap: 'wrap' }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <CalendarToday sx={{ fontSize: '1rem', color: 'text.secondary' }} />
+                        <Typography variant="body2" color="text.secondary">
+                          {formatDate(order.createdAt)}
+                        </Typography>
+                      </Box>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        {React.cloneElement(getPaymentIcon(order.paymentMethod), { 
+                          sx: { fontSize: '1rem', color: 'text.secondary' } 
+                        })}
+                        <Typography variant="body2" color="text.secondary" sx={{ textTransform: 'capitalize' }}>
+                          {order.paymentMethod}
+                        </Typography>
+                      </Box>
                     </Box>
                   }
                 />
                 
-                <CardContent sx={{ pt: 0 }}>
-                  <Grid container spacing={2}>
+                <CardContent sx={{ pt: 0, px: 3 }}>
+                  <Grid container spacing={3} sx={{ alignItems: 'center' }}>
                     <Grid item xs={12} sm={4}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minHeight: '40px' }}>
                         <ShoppingBag sx={{ fontSize: '1.2rem', color: 'primary.main' }} />
                         <Typography variant="body2" sx={{ fontWeight: 600 }}>
                           {order.OrderItems?.length || 0} article{(order.OrderItems?.length || 0) > 1 ? 's' : ''}
@@ -436,26 +466,34 @@ const OrdersList = () => {
                     </Grid>
                     
                     <Grid item xs={12} sm={4}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minHeight: '40px' }}>
                         <Payment sx={{ fontSize: '1.2rem', color: 'success.main' }} />
-                        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                        <Typography variant="body2" sx={{ fontWeight: 600, fontSize: '1.1rem' }}>
                           {parseFloat(order.totalAmount).toFixed(2)}€
                         </Typography>
                       </Box>
                     </Grid>
                     
                     <Grid item xs={12} sm={4}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minHeight: '40px' }}>
                         <LocationOn sx={{ fontSize: '1.2rem', color: 'info.main' }} />
-                        <Typography variant="body2" color="text.secondary">
-                          {order.paymentMethod}
+                        <Typography variant="body2" color="text.secondary" sx={{ 
+                          overflow: 'hidden', 
+                          textOverflow: 'ellipsis', 
+                          whiteSpace: 'nowrap',
+                          maxWidth: '180px'
+                        }}>
+                          {order.shippingAddress ? 
+                            `${order.shippingAddress.city}, ${order.shippingAddress.country}` : 
+                            'Adresse non renseignée'
+                          }
                         </Typography>
                       </Box>
                     </Grid>
                   </Grid>
                 </CardContent>
 
-                <CardActions sx={{ px: 3, pb: 3, gap: 1 }}>
+                <CardActions sx={{ px: 3, pb: 3, gap: 2, justifyContent: 'space-between', flexWrap: 'wrap' }}>
                   <Button 
                     variant="contained" 
                     startIcon={<Visibility />}
@@ -463,7 +501,9 @@ const OrdersList = () => {
                     sx={{ 
                       borderRadius: '10px',
                       fontWeight: 600,
-                      textTransform: 'none'
+                      textTransform: 'none',
+                      minWidth: '140px',
+                      py: 1
                     }}
                   >
                     Voir détails
@@ -477,18 +517,19 @@ const OrdersList = () => {
                       sx={{ 
                         borderRadius: '10px',
                         fontWeight: 600,
-                        textTransform: 'none'
+                        textTransform: 'none',
+                        minWidth: '120px',
+                        py: 1
                       }}
                     >
                       Annuler
                     </Button>
                   )}
                 </CardActions>
-              </Card>
-            </Fade>
-          </Grid>
+            </Card>
+          </Fade>
         ))}
-      </Grid>
+      </Box>
 
       <Dialog 
         open={detailsOpen} 
@@ -512,7 +553,7 @@ const OrdersList = () => {
         }}>
           <ShoppingBag sx={{ fontSize: '1.5rem' }} />
           <Typography variant="h5" sx={{ fontWeight: 700 }}>
-            Détails commande #{selectedOrder?.orderNumber}
+            Commande #{selectedOrder?.orderNumber}
           </Typography>
         </DialogTitle>
         
@@ -555,7 +596,9 @@ const OrdersList = () => {
                     </Box>
                     
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Payment sx={{ fontSize: '1rem', color: 'info.main' }} />
+                      {React.cloneElement(getPaymentIcon(selectedOrder.paymentMethod), { 
+                        sx: { fontSize: '1rem', color: 'info.main' } 
+                      })}
                       <Typography variant="body2">
                         <strong>Paiement:</strong> {selectedOrder.paymentMethod} ({selectedOrder.paymentStatus})
                       </Typography>

@@ -49,19 +49,20 @@ const Header = ({ onShowOrders, onShowProducts, onShowAdmin }) => {
               flexGrow: 1, 
               cursor: 'pointer',
               fontWeight: 800,
-              background: 'linear-gradient(45deg, #ffffff 30%, #f39c12 90%)',
+              background: 'linear-gradient(45deg, #ffffff 30%, #ffd700 90%)',
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
-              letterSpacing: '-0.5px'
+              letterSpacing: '-0.5px',
+              fontFamily: '"Poppins", "Inter", sans-serif'
             }}
             onClick={onShowProducts}
           >
-            SneakZone
+            👟 SoleHub
           </Typography>
           
                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                   <IconButton color="inherit" onClick={() => setCartOpen(true)}>
+                   <IconButton color="inherit" onClick={() => setCartOpen(!cartOpen)}>
                      <Badge badgeContent={cart.count} color="secondary">
                        <ShoppingCart />
                      </Badge>

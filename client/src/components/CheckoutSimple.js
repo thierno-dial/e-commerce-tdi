@@ -23,7 +23,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useNotification } from '../contexts/NotificationContext';
 import { orderService } from '../services/api';
 
-const CheckoutSimple = ({ open, onClose }) => {
+const CheckoutSimple = ({ open, onClose, onCancel, onSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [confirmOrderOpen, setConfirmOrderOpen] = useState(false);
   const { cart, fetchCart } = useCart();
@@ -70,6 +70,9 @@ const CheckoutSimple = ({ open, onClose }) => {
       await fetchCart();
       setConfirmOrderOpen(false);
       onClose();
+      if (onSuccess) {
+        onSuccess(); // Callback pour fermer le panier après succès
+      }
       
     } catch (error) {
       showNotification(error.response?.data?.error || 'Erreur lors de la commande', 'error');
@@ -78,8 +81,30 @@ const CheckoutSimple = ({ open, onClose }) => {
     }
   };
 
+  const handleCancel = () => {
+    onClose();
+    if (onCancel) {
+      onCancel(); // Callback pour rouvrir le panier
+    }
+  };
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog 
+      open={open} 
+      onClose={handleCancel} 
+      maxWidth="sm" 
+      fullWidth
+      sx={{
+        zIndex: (theme) => theme.zIndex.modal + 2, // Plus élevé que le CartDrawer
+        '& .MuiDialog-paper': {
+          zIndex: (theme) => theme.zIndex.modal + 2
+        },
+        '& .MuiBackdrop-root': {
+          backgroundColor: 'rgba(0, 0, 0, 0.3)', // Backdrop semi-transparent
+          backdropFilter: 'blur(2px)' // Léger flou pour voir le panier derrière
+        }
+      }}
+    >
       <DialogTitle>Finaliser la commande</DialogTitle>
       
       <DialogContent>
@@ -192,7 +217,7 @@ const CheckoutSimple = ({ open, onClose }) => {
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose}>Annuler</Button>
+        <Button onClick={handleCancel}>Annuler</Button>
         <Button 
           variant="contained" 
           onClick={handleOrderRequest}

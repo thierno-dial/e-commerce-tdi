@@ -192,10 +192,19 @@ const ProductCatalog = () => {
     return productDate > thirtyDaysAgo;
   };
 
-  const getStockStatus = (variants) => {
+  const getStockStatus = (variants, sizeFilters = []) => {
     if (!variants || variants.length === 0) return { status: 'out', count: 0 };
     
-    const totalStock = variants.reduce((sum, v) => sum + (v.stock || 0), 0);
+    // Filtrer les variants selon les filtres de taille appliqués
+    let filteredVariants = variants;
+    if (sizeFilters.length > 0) {
+      filteredVariants = variants.filter(variant => {
+        const sizeKey = `${variant.size}-${variant.sizeType}`;
+        return sizeFilters.includes(sizeKey);
+      });
+    }
+    
+    const totalStock = filteredVariants.reduce((sum, v) => sum + (v.stock || 0), 0);
     if (totalStock === 0) return { status: 'out', count: 0 };
     if (totalStock <= 5) return { status: 'low', count: totalStock };
     return { status: 'good', count: totalStock };
@@ -246,41 +255,49 @@ const ProductCatalog = () => {
         spacing={3} 
         sx={{ 
           '& .MuiGrid-item': {
-            display: 'flex'
+            display: 'flex',
+            justifyContent: 'center' // Centre les cartes
           },
           justifyContent: 'flex-start',
           alignItems: 'stretch',
-          // Force exactement 3 colonnes sur desktop
+          // Force exactement 4 colonnes sur desktop avec largeur fixe
           '@media (min-width: 900px)': {
             '& .MuiGrid-item': {
-              maxWidth: '33.333333%',
-              flexBasis: '33.333333%'
+              maxWidth: '25%',
+              flexBasis: '25%',
+              display: 'flex',
+              justifyContent: 'center'
             }
           },
-          // Force exactement 2 colonnes sur tablette
+          // Force exactement 2 colonnes sur tablette avec largeur fixe
           '@media (min-width: 600px) and (max-width: 899px)': {
             '& .MuiGrid-item': {
               maxWidth: '50%',
-              flexBasis: '50%'
+              flexBasis: '50%',
+              display: 'flex',
+              justifyContent: 'center'
             }
           }
         }}
       >
         {filteredProducts.map((product, index) => {
-          const stockStatus = getStockStatus(product.ProductVariants);
+          const stockStatus = getStockStatus(product.ProductVariants, sizeFilter);
           const isNew = isNewProduct(product.createdAt);
           
           return (
-            <Grid item xs={12} sm={6} md={4} key={product.id}>
+            <Grid item xs={12} sm={6} md={3} key={product.id}>
               <Fade in={true} timeout={300 + index * 100}>
                 <Card 
                   sx={{ 
-                    height: '100%', 
-                    width: '100%',
+                    height: 460, // Réduit car plus de section pointures
+                    width: { xs: '100%', sm: '280px', md: '260px' }, // Largeur adaptée pour 4 colonnes
+                    maxWidth: { xs: '100%', sm: '280px', md: '260px' },
+                    minWidth: { xs: '100%', sm: '280px', md: '260px' },
                     display: 'flex', 
                     flexDirection: 'column',
                     position: 'relative',
-                    overflow: 'visible'
+                    overflow: 'hidden', // Changé de visible à hidden
+                    margin: '0 auto' // Centrer la carte
                   }}
                 >
                   {/* Badges */}
@@ -379,7 +396,10 @@ const ProductCatalog = () => {
                     display: 'flex', 
                     flexDirection: 'column',
                     justifyContent: 'space-between',
-                    width: '100%' // Largeur uniforme
+                    width: '100%',
+                    minWidth: 0,
+                    overflow: 'hidden',
+                    boxSizing: 'border-box' // Force le respect des dimensions
                   }}>
                     {/* Catégorie et rating */}
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -397,12 +417,37 @@ const ProductCatalog = () => {
                       </Box>
                     </Box>
                     
-                    <Typography gutterBottom variant="h6" component="h3" sx={{ fontWeight: 600, lineHeight: 1.3 }}>
+                    <Typography 
+                      gutterBottom 
+                      variant="h6" 
+                      component="h3" 
+                      sx={{ 
+                        fontWeight: 600, 
+                        lineHeight: 1.3,
+                        height: '3.2em', // Hauteur fixe pour 2 lignes max
+                        overflow: 'hidden',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical'
+                      }}
+                    >
                       {product.name}
                     </Typography>
                     
                     {product.Seller && (
-                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                      <Typography 
+                        variant="body2" 
+                        color="text.secondary" 
+                        sx={{ 
+                          mb: 2, 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          gap: 0.5,
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap'
+                        }}
+                      >
                         🏪 {product.Seller.sellerInfo?.businessName || `${product.Seller.firstName} ${product.Seller.lastName}`}
                       </Typography>
                     )}
@@ -423,53 +468,12 @@ const ProductCatalog = () => {
                       </Typography>
                     </Box>
                     
-                    {/* Pointures disponibles - affichage informatif */}
-                    {product.ProductVariants && product.ProductVariants.length > 0 && (
-                      <Box sx={{ mb: 2 }}>
-                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1, fontWeight: 500 }}>
-                          Pointures disponibles:
-                        </Typography>
-                        <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-                          {product.ProductVariants
-                            .filter(variant => variant.stock > 0)
-                            .slice(0, 6) // Limiter l'affichage à 6 pointures max
-                            .map(variant => (
-                              <Chip
-                                key={variant.id}
-                                label={variant.size}
-                                size="small"
-                                sx={{
-                                  fontSize: '0.75rem',
-                                  height: '24px',
-                                  backgroundColor: 'grey.100',
-                                  color: 'text.primary',
-                                  '&:hover': {
-                                    backgroundColor: 'primary.light'
-                                  }
-                                }}
-                              />
-                            ))}
-                          {product.ProductVariants.filter(v => v.stock > 0).length > 6 && (
-                            <Chip
-                              label={`+${product.ProductVariants.filter(v => v.stock > 0).length - 6}`}
-                              size="small"
-                              sx={{
-                                fontSize: '0.75rem',
-                                height: '24px',
-                                backgroundColor: 'grey.200',
-                                color: 'text.secondary'
-                              }}
-                            />
-                          )}
-                        </Box>
-                      </Box>
-                    )}
                     
                     <Button 
                       variant="contained" 
                       fullWidth
                       size="large"
-                      disabled={!product.ProductVariants?.some(v => v.stock > 0)}
+                      disabled={stockStatus.status === 'out'}
                       onClick={() => handleAddToCartRequest(product)}
                       startIcon={<ShoppingCart />}
                       sx={{

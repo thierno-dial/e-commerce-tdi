@@ -8,49 +8,53 @@ import HeroSection from './components/HeroSection';
 import ProductCatalog from './components/ProductCatalog';
 import OrdersList from './components/OrdersList';
 import AdminDashboard from './components/AdminDashboard';
+import CookieBanner from './components/CookieBanner';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import LegalNotices from './components/LegalNotices';
+import Footer from './components/Footer';
 
 const theme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#2c3e50',      // Bleu marine sophistiqué
-      light: '#34495e',
-      dark: '#1a252f',
+      main: '#2d3748',      // Gris anthracite premium
+      light: '#4a5568',
+      dark: '#1a1a1a',      // Noir premium
       contrastText: '#ffffff'
     },
     secondary: {
-      main: '#e74c3c',      // Rouge énergique pour CTAs
-      light: '#ec7063',
-      dark: '#c0392b',
+      main: '#ff6b35',      // Orange énergique SoleHub
+      light: '#ff8a65',
+      dark: '#e64a19',
       contrastText: '#ffffff'
     },
     accent: {
-      main: '#f39c12',      // Orange premium pour highlights
-      light: '#f4d03f',
-      dark: '#d68910'
+      main: '#ffd700',      // Or premium pour highlights
+      light: '#ffeb3b',
+      dark: '#ffa000'
     },
     background: {
-      default: '#fafafa',   // Fond très léger
+      default: '#f7fafc',   // Gris très clair
       paper: '#ffffff'
     },
     text: {
-      primary: '#2c3e50',
-      secondary: '#7f8c8d'
+      primary: '#1a1a1a',   // Noir premium
+      secondary: '#a0aec0'   // Gris moyen
     },
     success: {
-      main: '#27ae60',      // Vert pour stock/succès
-      light: '#58d68d',
-      dark: '#1e8449'
+      main: '#48bb78',      // Vert moderne
+      light: '#68d391',
+      dark: '#38a169'
     },
     warning: {
-      main: '#f39c12',      // Orange pour alertes
-      light: '#f4d03f',
-      dark: '#d68910'
+      main: '#ed8936',      // Orange alerte
+      light: '#f6ad55',
+      dark: '#dd6b20'
     },
     error: {
-      main: '#e74c3c',      // Rouge pour erreurs
-      light: '#ec7063',
-      dark: '#c0392b'
+      main: '#f56565',      // Rouge moderne
+      light: '#fc8181',
+      dark: '#e53e3e'
     }
   },
   typography: {
@@ -165,6 +169,15 @@ const AppContent = () => {
   const [currentView, setCurrentView] = useState('products');
   const { user } = useAuth();
 
+  // Fonction de navigation qui nettoie automatiquement les hash
+  const navigateTo = (view) => {
+    // Nettoyer l'URL des hash si présents
+    if (window.location.hash) {
+      window.history.replaceState(null, null, window.location.pathname);
+    }
+    setCurrentView(view);
+  };
+
   const renderContent = () => {
     switch (currentView) {
       case 'orders':
@@ -181,16 +194,13 @@ const AppContent = () => {
             </Box>
           );
         }
-        return (
-          <Box sx={{ mb: 4 }}>
-            <Typography variant="h4" component="h1" gutterBottom>
-              Mes commandes
-            </Typography>
-            <OrdersList />
-          </Box>
-        );
+        return <OrdersList />;
       case 'admin':
         return <AdminDashboard />;
+      case 'privacy':
+        return <PrivacyPolicy />;
+      case 'legal':
+        return <LegalNotices />;
       case 'products':
       default:
         return (
@@ -226,9 +236,11 @@ const AppContent = () => {
       </a>
       
       <Header 
-        onShowOrders={() => setCurrentView('orders')} 
-        onShowProducts={() => setCurrentView('products')}
-        onShowAdmin={() => setCurrentView('admin')}
+        onShowOrders={() => navigateTo('orders')} 
+        onShowProducts={() => navigateTo('products')}
+        onShowAdmin={() => navigateTo('admin')}
+        onShowPrivacy={() => navigateTo('privacy')}
+        onShowLegal={() => navigateTo('legal')}
       />
       {/* Espacement pour le header fixe */}
       <Toolbar />
@@ -241,6 +253,15 @@ const AppContent = () => {
       >
         {renderContent()}
       </Box>
+      
+      {/* Footer avec liens légaux */}
+      <Footer 
+        onShowPrivacy={() => navigateTo('privacy')}
+        onShowLegal={() => navigateTo('legal')}
+      />
+      
+      {/* Bandeau de cookies RGPD */}
+      <CookieBanner />
     </>
   );
 };
