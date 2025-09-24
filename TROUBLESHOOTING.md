@@ -109,7 +109,7 @@ REACT_APP_API_URL=https://your-backend.onrender.com/api
 ### ✅ Backend fonctionne
 ```bash
 curl http://localhost:5000/api/health
-# Devrait retourner: {"status":"ok","timestamp":"..."}
+# Devrait retourner: {"status":"OK","timestamp":"..."}
 ```
 
 ### ✅ Base de données peuplée
@@ -125,12 +125,20 @@ Product.count().then(count => console.log(count + ' produits'));
 ### ✅ Frontend connecté
 Ouvrir http://localhost:3000 et vérifier que les produits s'affichent
 
+## 🧪 Test Automatisé de Déploiement
+
+Pour tester un déploiement Render :
+```bash
+./test-deployment.sh https://votre-backend.onrender.com
+```
+
 ## 📞 Support
 
 Si les problèmes persistent :
 1. Vérifier les logs dans la console du navigateur
 2. Vérifier les logs du serveur Node.js
 3. Consulter la documentation complète dans `DOCUMENTATION-TECHNIQUE-FONCTIONNELLE.md`
+4. Utiliser le script de test automatisé
 
 ---
 
