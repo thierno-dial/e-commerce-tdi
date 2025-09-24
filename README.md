@@ -80,64 +80,40 @@ npm start
 
 ## 🌐 Déploiement sur Render
 
-### Backend (API)
+### 🚀 Guide Complet
+Voir **`DEPLOYMENT-CONFIG.md`** pour le guide détaillé étape par étape.
 
-#### 1. Préparation
+### ⚡ Résumé Rapide
+
+#### Backend (API)
+1. **Render** → **New Web Service** → Connecter GitHub
+2. **Configuration** :
+   - Root Directory: `server`
+   - Build: `npm install`
+   - Start: `npm start`
+3. **Variables** : `NODE_ENV=production`, `JWT_SECRET=...`, `PORT=5000`
+4. **Base de données** : Shell → `npm run seed`
+
+#### Frontend (Interface)
+1. **Créer** `client/.env.production` :
+   ```bash
+   REACT_APP_API_URL=https://votre-backend.onrender.com/api
+   ```
+2. **Render** → **New Static Site** → Connecter GitHub
+3. **Configuration** :
+   - Root Directory: `client`
+   - Build: `npm install && npm run build`
+   - Publish: `build`
+
+#### Test de Déploiement
 ```bash
-# Dans le dossier server/
-# Créer un fichier render.yaml (optionnel)
+# Tester l'API
+./test-deployment.sh https://votre-backend.onrender.com
+
+# Tester l'interface
+# Ouvrir https://votre-frontend.onrender.com
+# Connexion admin: admin@sneakersshop.com / SneakersShop2025!Admin
 ```
-
-#### 2. Configuration Render
-- **Service Type**: Web Service
-- **Repository**: Votre repo GitHub
-- **Root Directory**: `server`
-- **Build Command**: `npm install`
-- **Start Command**: `npm start`
-- **Environment**: Node.js
-
-#### 3. Variables d'Environnement
-```bash
-NODE_ENV=production
-JWT_SECRET=your-super-secret-jwt-key-here
-PORT=5000
-```
-
-#### 4. Base de Données
-```bash
-# Après le premier déploiement, exécuter via Render Shell:
-npm run seed
-# ou
-node scripts/seed-production.js
-```
-
-### Frontend (Interface)
-
-#### 1. Configuration de l'API
-```bash
-# Dans client/src/services/api.js
-# Modifier l'URL de base pour pointer vers votre backend Render
-const API_BASE_URL = 'https://your-backend-app.onrender.com/api';
-```
-
-#### 2. Build et Déploiement
-```bash
-# Localement, tester le build
-cd client
-npm run build
-
-# Upload sur un service de hosting statique:
-# - Render Static Sites
-# - Netlify
-# - Vercel
-```
-
-#### 3. Configuration Render (Static Site)
-- **Service Type**: Static Site
-- **Repository**: Votre repo GitHub
-- **Root Directory**: `client`
-- **Build Command**: `npm install && npm run build`
-- **Publish Directory**: `build`
 
 ## 🔧 Configuration de Production
 
