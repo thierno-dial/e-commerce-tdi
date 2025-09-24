@@ -186,9 +186,6 @@ export const CartTimerProvider = ({ children }) => {
 
     const savedStart = localStorage.getItem('cartTimerStart');
     const savedDuration = localStorage.getItem('cartTimerDuration');
-    console.log('   - savedStart:', savedStart);
-    console.log('   - savedDuration:', savedDuration);
-    console.log('   - isActive actuel:', isActive);
     
     // Si le timer est déjà actif, ne pas le redémarrer
     if (isActive) {
@@ -211,7 +208,6 @@ export const CartTimerProvider = ({ children }) => {
       const elapsed = Math.floor((Date.now() - startTime) / 1000);
       const remaining = duration - elapsed;
       
-      console.log('   - remaining:', remaining);
       
       if (remaining > 0) {
         setTimeRemaining(remaining);
@@ -364,9 +360,6 @@ export const CartTimerProvider = ({ children }) => {
 
   // Fonction pour prolonger automatiquement le timer lors d'ajout d'article
   const extendOnAddItem = useCallback(() => {
-    console.log('   - isActive:', isActive);
-    console.log('   - isExpired:', isExpired);
-    console.log('   - timeRemaining:', timeRemaining);
     
     // Ne rien faire si le panier est vide (sécurité)
     if (cartItems.length === 0) {
@@ -388,10 +381,6 @@ export const CartTimerProvider = ({ children }) => {
       // Si pas de timer actif et pas récemment expiré, démarrer un nouveau timer
       startTimer();
     } else {
-      console.log('   - isActive:', isActive);
-      console.log('   - isExpired:', isExpired);
-      console.log('   - timeRemaining:', timeRemaining);
-      console.log('   - État actuel non géré');
     }
   }, [isActive, isExpired, timeRemaining, cartItems.length, extendTimer, startTimer, showNotification]);
 

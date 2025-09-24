@@ -217,13 +217,11 @@ const seedProductionData = async () => {
     for (const userData of usersData) {
       userPasswords[userData.email] = userData.password;
       
-      const hashedPassword = await bcryptjs.hash(userData.password, 12);
+      // Le modèle User hache automatiquement le mot de passe via beforeCreate hook
       
       const user = await User.create({
-        ...userData,
-        password: hashedPassword
-      }, {
-        hooks: false // Éviter le double hashage
+        ...userData
+        // password sera haché automatiquement par le hook beforeCreate
       });
       
       createdUsers.push(user);
