@@ -69,7 +69,7 @@ const usersData = [
   {
     firstName: 'Fatoumata',
     lastName: 'Bah',
-    email: 'admin@neakersshop.com',
+    email: 'admin@sneakersshop.com',
     password: 'SneakersShop2025!Admin',
     role: 'admin'
   },
