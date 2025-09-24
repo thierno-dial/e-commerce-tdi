@@ -174,9 +174,10 @@ const isValidSize = (category, size, sizeType) => {
 
 ### Statistiques
 - **108 produits** uniques
-- **2171 variantes** de tailles
-- **7 marques** représentées
+- **2195 variantes** de tailles
+- **7 marques** représentées (Nike, Jordan, adidas, New Balance, ASICS, Under Armour, Maison Mihara Yasuhiro)
 - **3 catégories** (hommes, femmes, enfants)
+- **11 utilisateurs** de test (1 admin, 4 vendeurs, 6 clients)
 
 ### Modèle de Données
 
@@ -272,7 +273,8 @@ app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 })); // Rate limiting
 ```bash
 cd server
 npm install
-npm start
+npm run seed    # Initialisation base de données
+npm start       # Démarrage serveur
 # Serveur disponible sur http://localhost:5000
 ```
 
@@ -282,6 +284,16 @@ cd client
 npm install
 npm start
 # Application disponible sur http://localhost:3000
+```
+
+#### 3. Initialisation Base de Données
+```bash
+# Plusieurs options disponibles
+npm run seed        # Recommandé
+npm run db:init     # Alternative
+node scripts/seed-production.js  # Direct
+
+# Résultat : 108 produits, 2195 variantes, 11 utilisateurs
 ```
 
 ### Comptes de Test
@@ -391,10 +403,11 @@ npm start
 
 ### Couverture Fonctionnelle
 - **Produits** : 108 références (108% de l'objectif)
-- **Variantes** : 2171 tailles gérées
+- **Variantes** : 2195 tailles gérées
 - **Catégories** : 3 catégories avec tailles réalistes
 - **Marques** : 7 marques reconnues
-- **Rôles** : 3 profils utilisateur complets
+- **Utilisateurs** : 11 comptes de test complets
+- **Rôles** : 3 profils utilisateur (admin/seller/customer)
 
 ---
 

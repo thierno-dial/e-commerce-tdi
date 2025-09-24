@@ -39,7 +39,16 @@ REACT_APP_API_URL=https://your-backend-app.onrender.com/api
 2. Connecter votre repository
 3. Configurer les variables d'environnement
 4. Déployer
-5. Initialiser la base de données via Shell: `npm run seed`
+5. Initialiser la base de données via Shell:
+   ```bash
+   npm run seed
+   # ou
+   npm run db:init
+   # ou
+   node scripts/seed-production.js
+   ```
+   
+**Résultat attendu** : 108 produits, 2195 variantes, 11 utilisateurs
 
 ### 2. Frontend
 1. Créer `.env.production` avec l'URL du backend

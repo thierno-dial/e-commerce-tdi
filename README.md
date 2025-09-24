@@ -22,12 +22,20 @@ npm install
 
 ### 3. Initialisation de la Base de Données
 ```bash
-# Créer les tables et insérer les données
+# Créer les tables et insérer les données (recommandé)
 npm run seed
 
-# Alternative si seed ne fonctionne pas
+# Alternative
+npm run db:init
+
+# Ou directement
 node scripts/seed-production.js
 ```
+
+**✅ Résultat attendu** :
+- 108 produits créés
+- 2195 variantes de tailles
+- 11 utilisateurs (admin, vendeurs, clients)
 
 ### 4. Démarrage du Backend
 ```bash
@@ -177,6 +185,7 @@ REACT_APP_API_URL=https://your-backend-app.onrender.com/api
 npm start          # Démarrer le serveur
 npm run dev        # Démarrer en mode développement (avec nodemon)
 npm run seed       # Initialiser la base de données
+npm run db:init    # Alternative pour initialiser la base de données
 ```
 
 ### Frontend
@@ -206,8 +215,10 @@ npm test           # Lancer les tests
 ## 📖 Documentation
 
 - **Documentation technique complète**: `DOCUMENTATION-TECHNIQUE-FONCTIONNELLE.md`
+- **Configuration de déploiement**: `DEPLOYMENT-CONFIG.md`
+- **Guide de dépannage**: `TROUBLESHOOTING.md`
 - **Architecture**: React + Node.js + SQLite
-- **Base de données**: 108 produits, 2171 variantes, 7 marques
+- **Base de données**: 108 produits, 2195 variantes, 7 marques
 - **Sécurité**: JWT, bcrypt, CORS, Helmet, Rate limiting
 
 ## 🆘 Dépannage
@@ -217,6 +228,10 @@ npm test           # Lancer les tests
 **Base de données vide**:
 ```bash
 cd server
+npm run seed
+# ou
+npm run db:init
+# ou
 node scripts/seed-production.js
 ```
 
