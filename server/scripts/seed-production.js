@@ -192,11 +192,13 @@ const determineCategory = (name, description) => {
 // Fonction principale de seeding
 const seedProductionData = async () => {
   try {
+    console.log('🔧 INITIALISATION DE LA BASE DE DONNÉES...');
+    
+    // Créer les tables si elles n'existent pas
+    await sequelize.sync({ force: true }); // force: true recrée les tables
+    console.log('✅ Tables créées avec succès');
 
-    // Nettoyer la base de données
-    await ProductVariant.destroy({ where: {}, truncate: true });
-    await Product.destroy({ where: {}, truncate: true });
-    await User.destroy({ where: {}, truncate: true });
+    // Les tables sont maintenant créées, pas besoin de nettoyer
 
     // Lire tous les fichiers CSV
     console.log('📖 LECTURE DES FICHIERS CSV...');
