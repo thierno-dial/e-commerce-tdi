@@ -46,6 +46,7 @@ import ConfirmDialog from './ConfirmDialog';
 import { orderService } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { useNotification } from '../contexts/NotificationContext';
+import useAutoRefresh from '../hooks/useAutoRefresh';
 
 const OrdersList = () => {
   const [orders, setOrders] = useState([]);
@@ -65,17 +66,14 @@ const OrdersList = () => {
   const { user } = useAuth();
   const { showNotification } = useNotification();
 
-  useEffect(() => {
-    if (user) {
-      fetchOrders();
-    }
-  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
-
   const fetchOrders = async () => {
     try {
       setLoading(true);
       const response = await orderService.getAll();
       setOrders(response.data.orders);
+      
+      // Déclencher la mise à jour du compteur de commandes
+      window.dispatchEvent(new CustomEvent('ordersUpdated'));
     } catch (error) {
       console.error('Error fetching orders:', error);
       showNotification('Erreur lors du chargement des commandes', 'error');
@@ -83,6 +81,15 @@ const OrdersList = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      fetchOrders();
+    }
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Mise à jour automatique toutes les 45 secondes (un peu moins fréquent que les articles expirés)
+  useAutoRefresh(fetchOrders, 45000, !!user);
 
   // Fonction de filtrage simple pour les clients
   const getFilteredOrders = () => {
@@ -552,7 +559,7 @@ const OrdersList = () => {
           borderRadius: '20px 20px 0 0'
         }}>
           <ShoppingBag sx={{ fontSize: '1.5rem' }} />
-          <Typography variant="h5" sx={{ fontWeight: 700 }}>
+          <Typography variant="h6" component="span" sx={{ fontWeight: 700 }}>
             Commande #{selectedOrder?.orderNumber}
           </Typography>
         </DialogTitle>
@@ -576,8 +583,10 @@ const OrdersList = () => {
                     </Box>
                     
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                      <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <strong>Statut:</strong> 
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Typography variant="body2" component="span">
+                          <strong>Statut:</strong>
+                        </Typography>
                         <Chip 
                           icon={getStatusIcon(selectedOrder.status)}
                           label={getStatusLabel(selectedOrder.status)} 
@@ -585,7 +594,7 @@ const OrdersList = () => {
                           size="small"
                           sx={{ fontWeight: 600 }}
                         />
-                      </Typography>
+                      </Box>
                     </Box>
                     
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
@@ -670,11 +679,11 @@ const OrdersList = () => {
                         </Typography>
                       }
                       secondary={
-                        <Box>
-                          <Typography variant="body2" color="text.secondary">
+                        <Box component="div">
+                          <Typography variant="body2" color="text.secondary" component="span" display="block">
                             {item.ProductVariant?.Product?.brand || ''} • Pointure: {item.ProductVariant?.size || 'N/A'}
                           </Typography>
-                          <Typography variant="body2" color="primary.main" sx={{ fontWeight: 600 }}>
+                          <Typography variant="body2" color="primary.main" sx={{ fontWeight: 600 }} component="span" display="block">
                             {item.quantity} x {parseFloat(item.unitPrice).toFixed(2)}€
                           </Typography>
                         </Box>

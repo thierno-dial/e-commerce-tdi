@@ -43,4 +43,11 @@ export const orderService = {
   updateStatus: (id, status) => api.put(`/orders/${id}/status`, { status })
 };
 
+export const expiredCartService = {
+  saveExpiredItems: (items) => api.post('/expired-cart/save', { items }),
+  getHistory: (options = {}) => api.get('/expired-cart/history', { params: options }),
+  reorderItem: (expiredItemId, quantity) => 
+    api.post(`/expired-cart/reorder-to-cart/${expiredItemId}`, { quantity })
+};
+
 export default api;

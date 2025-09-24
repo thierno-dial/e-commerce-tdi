@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Grid, Card, CardMedia, CardContent, Typography, Button, Chip, Box, CircularProgress, Alert, Fade, Pagination, Stack } from '@mui/material';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { Grid, Card, CardMedia, CardContent, Typography, Button, Chip, Box, CircularProgress, Alert, Fade, Pagination } from '@mui/material';
 import { LocalOffer, ShoppingCart, Inventory2 } from '@mui/icons-material';
 import { productService } from '../services/api';
 import useCartWithTimer from '../hooks/useCartWithTimer';
@@ -28,6 +28,7 @@ const ProductCatalog = () => {
   // Utilisation du contexte des filtres
   const {
     searchTerm,
+    debouncedSearchTerm, // Utiliser la version debouncée pour les requêtes
     categoryFilter,
     brandFilter,
     sizeFilter,
@@ -43,7 +44,7 @@ const ProductCatalog = () => {
   } = useFilters();
 
   // Fonction pour récupérer les produits avec pagination et filtres
-  const fetchProducts = async (page = 1, filters = {}) => {
+  const fetchProducts = useCallback(async (page = 1, filters = {}) => {
     setLoading(true);
     try {
       const params = {
@@ -62,31 +63,31 @@ const ProductCatalog = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [setCurrentPage, setTotalPages, setTotalItems]);
 
   // Effet pour charger les produits initialement
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [fetchProducts]);
 
   // Effet pour recharger les produits quand les filtres changent
   useEffect(() => {
     const filters = {};
     if (categoryFilter !== 'all') filters.category = categoryFilter;
     if (brandFilter !== 'all') filters.brand = brandFilter;
-    if (searchTerm) filters.search = searchTerm;
+    if (debouncedSearchTerm) filters.search = debouncedSearchTerm; // Utiliser la version debouncée
     if (sortBy) filters.sortBy = sortBy;
     
     resetPagination(); // Reset à la page 1 quand les filtres changent
     fetchProducts(1, filters);
-  }, [categoryFilter, brandFilter, searchTerm, sortBy]);
+  }, [categoryFilter, brandFilter, debouncedSearchTerm, sortBy, fetchProducts, resetPagination]); // Utiliser debouncedSearchTerm
 
   // Gestionnaire de changement de page
   const handlePageChange = (event, page) => {
     const filters = {};
     if (categoryFilter !== 'all') filters.category = categoryFilter;
     if (brandFilter !== 'all') filters.brand = brandFilter;
-    if (searchTerm) filters.search = searchTerm;
+    if (debouncedSearchTerm) filters.search = debouncedSearchTerm; // Utiliser la version debouncée
     if (sortBy) filters.sortBy = sortBy;
     
     fetchProducts(page, filters);
@@ -226,9 +227,9 @@ const ProductCatalog = () => {
 
   const isNewProduct = (createdAt) => {
     const productDate = new Date(createdAt);
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    return productDate > thirtyDaysAgo;
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    return productDate > sevenDaysAgo;
   };
 
   const getStockStatus = (variants, sizeFilters = []) => {

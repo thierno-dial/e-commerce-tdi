@@ -94,17 +94,14 @@ const CookieBanner = () => {
   const enableThirdPartyServices = (preferences) => {
     // Ici vous pourriez activer/désactiver Google Analytics, Facebook Pixel, etc.
     if (preferences.analytics) {
-      // console.log('Analytics cookies enabled');
       // Exemple: gtag('config', 'GA_MEASUREMENT_ID');
     }
     
     if (preferences.marketing) {
-      // console.log('Marketing cookies enabled');
       // Exemple: fbq('init', 'FACEBOOK_PIXEL_ID');
     }
     
     if (preferences.preferences) {
-      // console.log('Preference cookies enabled');
     }
   };
 
@@ -174,7 +171,7 @@ const CookieBanner = () => {
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
           <Cookie sx={{ color: '#ff6b35', mr: 1, fontSize: '1.5rem' }} />
           <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 600, color: '#1a1a1a' }}>
-            🍪 Gestion des Cookies - SoleHub
+            🍪 Gestion des Cookies - SneakersShop
           </Typography>
           <IconButton onClick={() => setIsVisible(false)} size="small">
             <Close />
@@ -183,7 +180,7 @@ const CookieBanner = () => {
 
         {/* Description principale */}
         <Typography variant="body1" sx={{ mb: 3, color: '#2d3748', lineHeight: 1.6 }}>
-          Nous utilisons des cookies pour améliorer votre expérience sur SoleHub, analyser notre trafic et personnaliser le contenu. 
+          Nous utilisons des cookies pour améliorer votre expérience sur SneakersShop, analyser notre trafic et personnaliser le contenu. 
           Vous pouvez choisir quels types de cookies vous souhaitez accepter.
           {' '}
           <Link 

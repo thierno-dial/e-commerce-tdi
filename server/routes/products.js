@@ -20,10 +20,22 @@ router.get('/my-products', authenticateToken, requireRole(['seller', 'admin']), 
     if (category) where.category = category;
     if (brand) where.brand = brand;
     if (search) {
-      where[require('sequelize').Op.or] = [
-        { name: { [require('sequelize').Op.like]: `%${search}%` } },
-        { description: { [require('sequelize').Op.like]: `%${search}%` } }
-      ];
+      // Vérifier si le terme de recherche correspond à une marque connue
+      const knownBrands = ['Nike', 'Jordan', 'adidas', 'New Balance', 'ASICS', 'Under Armour', 'Maison Mihara Yasuhiro'];
+      const matchingBrand = knownBrands.find(brandName => 
+        brandName.toLowerCase() === search.toLowerCase()
+      );
+      
+      if (matchingBrand) {
+        // Si c'est une marque connue, chercher seulement dans cette marque
+        where.brand = matchingBrand;
+      } else {
+        // Sinon, recherche générale dans le nom et la description
+        where[require('sequelize').Op.or] = [
+          { name: { [require('sequelize').Op.like]: `%${search}%` } },
+          { description: { [require('sequelize').Op.like]: `%${search}%` } }
+        ];
+      }
     }
 
     const products = await Product.findAndCountAll({
@@ -48,8 +60,8 @@ router.get('/my-products', authenticateToken, requireRole(['seller', 'admin']), 
           case 'price-desc': return [['basePrice', 'DESC']];
           case 'name': return [['name', 'ASC']];
           case 'name-desc': return [['name', 'DESC']];
-          case 'newest':
-          default: return [['createdAt', 'DESC']];
+          case 'newest': return [['createdAt', 'DESC']];
+          default: return [require('sequelize').fn('RANDOM')]; // Ordre aléatoire par défaut
         }
       })()
     });
@@ -79,10 +91,22 @@ router.get('/', async (req, res) => {
     if (category) where.category = category;
     if (brand) where.brand = brand;
     if (search) {
-      where[require('sequelize').Op.or] = [
-        { name: { [require('sequelize').Op.like]: `%${search}%` } },
-        { description: { [require('sequelize').Op.like]: `%${search}%` } }
-      ];
+      // Vérifier si le terme de recherche correspond à une marque connue
+      const knownBrands = ['Nike', 'Jordan', 'adidas', 'New Balance', 'ASICS', 'Under Armour', 'Maison Mihara Yasuhiro'];
+      const matchingBrand = knownBrands.find(brandName => 
+        brandName.toLowerCase() === search.toLowerCase()
+      );
+      
+      if (matchingBrand) {
+        // Si c'est une marque connue, chercher seulement dans cette marque
+        where.brand = matchingBrand;
+      } else {
+        // Sinon, recherche générale dans le nom et la description
+        where[require('sequelize').Op.or] = [
+          { name: { [require('sequelize').Op.like]: `%${search}%` } },
+          { description: { [require('sequelize').Op.like]: `%${search}%` } }
+        ];
+      }
     }
 
     const products = await Product.findAndCountAll({
@@ -107,8 +131,8 @@ router.get('/', async (req, res) => {
           case 'price-desc': return [['basePrice', 'DESC']];
           case 'name': return [['name', 'ASC']];
           case 'name-desc': return [['name', 'DESC']];
-          case 'newest':
-          default: return [['createdAt', 'DESC']];
+          case 'newest': return [['createdAt', 'DESC']];
+          default: return [require('sequelize').fn('RANDOM')]; // Ordre aléatoire par défaut
         }
       })()
     });

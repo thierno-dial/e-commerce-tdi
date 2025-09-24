@@ -34,7 +34,7 @@ const PrivacyPolicy = () => {
       content: (
         <Box>
           <Typography variant="body1" paragraph>
-            SoleHub collecte les données personnelles suivantes :
+            SneakersShop collecte les données personnelles suivantes :
           </Typography>
           <List>
             <ListItem>
@@ -194,7 +194,7 @@ const PrivacyPolicy = () => {
             <Typography variant="body2">
               Contactez-nous à : <strong>fatoumata-bah@epitech.eu</strong>
               <br />
-              Ou par courrier : SoleHub - Service RGPD, Epitech: 2 Rue du Professeur Charles Appleton, 69007 Lyon
+              Ou par courrier : SneakersShop - Service RGPD, Epitech: 2 Rue du Professeur Charles Appleton, 69007 Lyon
             </Typography>
           </Paper>
         </Box>
@@ -270,7 +270,7 @@ const PrivacyPolicy = () => {
             🔒 Politique de Confidentialité
           </Typography>
           <Typography variant="h6" color="text.secondary" sx={{ maxWidth: '800px', mx: 'auto' }}>
-            SoleHub respecte votre vie privée et s'engage à protéger vos données personnelles
+            SneakersShop respecte votre vie privée et s'engage à protéger vos données personnelles
           </Typography>
           <Chip 
             label={`Dernière mise à jour : ${new Date().toLocaleDateString('fr-FR')}`}
@@ -287,7 +287,7 @@ const PrivacyPolicy = () => {
             Responsable du traitement
           </Typography>
           <Typography variant="body1">
-            <strong>SoleHub</strong><br />
+            <strong>SneakersShop</strong><br />
             Marketplace de sneakers authentiques<br />
             Epitech: 2 Rue du Professeur Charles Appleton, 69007 Lyon, France<br />
             Email : <strong>fatoumata-bah@epitech.eu</strong><br />
@@ -335,7 +335,7 @@ const PrivacyPolicy = () => {
           <Typography variant="body1">
             📧 <strong>fatoumata-bah@epitech.eu</strong><br />
             📞 <strong>+33 7 00 00 00 00</strong><br />
-            📍 <strong>SoleHub - Service RGPD, Epitech: 2 Rue du Professeur Charles Appleton, 69007 Lyon</strong>
+            📍 <strong>SneakersShop - Service RGPD, Epitech: 2 Rue du Professeur Charles Appleton, 69007 Lyon</strong>
           </Typography>
           <Typography variant="body2" sx={{ mt: 2, color: 'text.secondary' }}>
             Vous avez également le droit de déposer une réclamation auprès de la CNIL (Commission Nationale de l'Informatique et des Libertés).

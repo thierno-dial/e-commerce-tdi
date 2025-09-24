@@ -34,7 +34,7 @@ const Footer = ({ onShowPrivacy, onShowLegal }) => {
 
   const footerLinks = {
     company: [
-      { label: 'À propos de SoleHub', onClick: () => handleClearHashAndNavigate() },
+      { label: 'À propos de SneakersShop', onClick: () => handleClearHashAndNavigate() },
       { label: 'Notre histoire', onClick: () => handleClearHashAndNavigate() },
       { label: 'Carrières', onClick: () => handleClearHashAndNavigate() },
       { label: 'Presse', onClick: () => handleClearHashAndNavigate() }
@@ -84,7 +84,7 @@ const Footer = ({ onShowPrivacy, onShowLegal }) => {
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent'
             }}>
-              👟 SoleHub
+              👟 SneakersShop
             </Typography>
             <Typography variant="body1" sx={{ mb: 3, color: '#a0aec0', lineHeight: 1.6 }}>
               Votre marketplace de sneakers authentiques. 
@@ -267,7 +267,7 @@ const Footer = ({ onShowPrivacy, onShowLegal }) => {
           gap: 2
         }}>
           <Typography variant="body2" sx={{ color: '#a0aec0' }}>
-            © {new Date().getFullYear()} SoleHub. Tous droits réservés.
+            © {new Date().getFullYear()} SneakersShop. Tous droits réservés.
           </Typography>
           
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>

@@ -34,7 +34,7 @@ const LegalNotices = () => {
       content: (
         <Box>
           <Typography variant="body1" paragraph>
-            <strong>Raison sociale :</strong> SoleHub (Projet étudiant)<br />
+            <strong>Raison sociale :</strong> SneakersShop (Projet étudiant)<br />
             <strong>Établissement :</strong> Epitech Lyon<br />
             <strong>Formation :</strong> Web@cadémie - Développement Web<br />
             <strong>Responsable projet :</strong> Fatoumata Bah<br />
@@ -78,13 +78,13 @@ const LegalNotices = () => {
       content: (
         <Box>
           <Typography variant="body1" paragraph>
-            L'ensemble du contenu du site SoleHub (textes, images, vidéos, logos, icônes, sons, logiciels) 
+            L'ensemble du contenu du site SneakersShop (textes, images, vidéos, logos, icônes, sons, logiciels) 
             est protégé par les droits de propriété intellectuelle.
           </Typography>
           <Typography variant="body1" paragraph>
             Toute reproduction, représentation, modification, publication, adaptation de tout ou partie 
             des éléments du site, quel que soit le moyen ou le procédé utilisé, est interdite, 
-            sauf autorisation écrite préalable de SoleHub.
+            sauf autorisation écrite préalable de SneakersShop.
           </Typography>
           <Typography variant="body2" sx={{ fontStyle: 'italic', color: 'text.secondary' }}>
             Les marques et logos des produits vendus appartiennent à leurs propriétaires respectifs.
@@ -115,7 +115,7 @@ const LegalNotices = () => {
             ⚖️ Mentions Légales
           </Typography>
           <Typography variant="h6" color="text.secondary" sx={{ maxWidth: '800px', mx: 'auto' }}>
-            Informations légales obligatoires concernant SoleHub
+            Informations légales obligatoires concernant SneakersShop
           </Typography>
           <Chip 
             label={`Dernière mise à jour : ${new Date().toLocaleDateString('fr-FR')}`}
@@ -203,7 +203,7 @@ const LegalNotices = () => {
             Conditions Générales
           </Typography>
           <Typography variant="body1" paragraph>
-            L'utilisation du site SoleHub implique l'acceptation pleine et entière des conditions générales 
+            L'utilisation du site SneakersShop implique l'acceptation pleine et entière des conditions générales 
             d'utilisation et de vente disponibles sur notre site.
           </Typography>
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
@@ -219,7 +219,7 @@ const LegalNotices = () => {
             ⚠️ Limitation de responsabilité
           </Typography>
           <Typography variant="body1" paragraph>
-            SoleHub s'efforce de fournir des informations aussi précises que possible sur le site. 
+            SneakersShop s'efforce de fournir des informations aussi précises que possible sur le site. 
             Toutefois, il ne pourra être tenu responsable des omissions, des inexactitudes et des 
             carences dans la mise à jour, qu'elles soient de son fait ou du fait des tiers 
             partenaires qui lui fournissent ces informations.
@@ -238,7 +238,7 @@ const LegalNotices = () => {
           </Typography>
           <Typography variant="body1" paragraph>
             Conformément aux dispositions du Code de la consommation concernant le règlement 
-            amiable des litiges, SoleHub adhère au Service du Médiateur du e-commerce de la FEVAD 
+            amiable des litiges, SneakersShop adhère au Service du Médiateur du e-commerce de la FEVAD 
             (Fédération du e-commerce et de la vente à distance).
           </Typography>
           <Typography variant="body1">

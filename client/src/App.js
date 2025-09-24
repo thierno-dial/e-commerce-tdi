@@ -3,7 +3,7 @@ import { ThemeProvider, createTheme, CssBaseline, Container, Typography, Box, To
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import { NotificationProvider } from './contexts/NotificationContext';
-import { FiltersProvider } from './contexts/FiltersContext';
+import { FiltersProvider, useFilters } from './contexts/FiltersContext';
 import { CartTimerProvider } from './contexts/CartTimerContext';
 import AuthFiltersSync from './components/AuthFiltersSync';
 import Header from './components/Header';
@@ -11,6 +11,7 @@ import HeroSection from './components/HeroSection';
 import AnimatedBackground from './components/AnimatedBackground';
 import ProductCatalog from './components/ProductCatalog';
 import OrdersList from './components/OrdersList';
+import ExpiredItemsHistory from './components/ExpiredItemsHistory';
 import AdminDashboard from './components/AdminDashboard';
 import CookieBanner from './components/CookieBanner';
 import PrivacyPolicy from './components/PrivacyPolicy';
@@ -27,7 +28,7 @@ const theme = createTheme({
       contrastText: '#ffffff'
     },
     secondary: {
-      main: '#ff6b35',      // Orange énergique SoleHub
+      main: '#ff6b35',      // Orange énergique SneakersShop
       light: '#ff8a65',
       dark: '#e64a19',
       contrastText: '#ffffff'
@@ -172,6 +173,7 @@ const theme = createTheme({
 const AppContent = () => {
   const [currentView, setCurrentView] = useState('products');
   const { user } = useAuth();
+  const { setCategoryFilter } = useFilters();
 
   // Fonction de navigation qui nettoie automatiquement les hash
   const navigateTo = (view) => {
@@ -199,6 +201,17 @@ const AppContent = () => {
           );
         }
         return <OrdersList />;
+      case 'expired-items':
+        if (!user || user.role !== 'customer') {
+          return (
+            <Box sx={{ textAlign: 'center', py: 8 }}>
+              <Typography variant="h6" color="text.secondary">
+                Cette page est réservée aux clients.
+              </Typography>
+            </Box>
+          );
+        }
+        return <ExpiredItemsHistory />;
       case 'admin':
         return <AdminDashboard />;
       case 'privacy':
@@ -210,7 +223,11 @@ const AppContent = () => {
         return (
           <>
             <HeroSection 
-              onShopNow={() => {
+              onShopNow={(category = null) => {
+                // Si une catégorie est spécifiée, l'appliquer au filtre
+                if (category) {
+                  setCategoryFilter(category);
+                }
                 // Scroll vers le catalogue
                 const catalogElement = document.getElementById('product-catalog');
                 if (catalogElement) {
@@ -253,6 +270,7 @@ const AppContent = () => {
         onShowOrders={() => navigateTo('orders')} 
         onShowProducts={() => navigateTo('products')}
         onShowAdmin={() => navigateTo('admin')}
+        onShowExpiredItems={() => navigateTo('expired-items')}
         onShowPrivacy={() => navigateTo('privacy')}
         onShowLegal={() => navigateTo('legal')}
         onNavigateHome={() => navigateTo('home')}

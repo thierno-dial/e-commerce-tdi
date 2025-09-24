@@ -37,7 +37,6 @@ const CartDrawer = ({ open, onClose, onLoginRequest, autoCheckout = false, onChe
   // Déclencher automatiquement le checkout si demandé
   useEffect(() => {
     if (autoCheckout && open && cart.items.length > 0 && user) {
-      console.log('🚀 Auto-checkout déclenché depuis le timer');
       setCheckoutOpen(true);
       if (onCheckoutStart) {
         onCheckoutStart();
@@ -177,12 +176,12 @@ const CartDrawer = ({ open, onClose, onLoginRequest, autoCheckout = false, onChe
                   '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' }
                 }}
               >
-                <Close />
-              </IconButton>
+            <Close />
+          </IconButton>
             </Box>
           </Box>
         </Box>
-        
+
         
         {cart.items.length === 0 ? (
           <Box sx={{ 
@@ -230,8 +229,8 @@ const CartDrawer = ({ open, onClose, onLoginRequest, autoCheckout = false, onChe
                     }}
                   >
                     <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-                      <Avatar
-                        src={info.image}
+                    <Avatar
+                      src={info.image}
                         sx={{ 
                           width: 60, 
                           height: 60, 
@@ -239,19 +238,19 @@ const CartDrawer = ({ open, onClose, onLoginRequest, autoCheckout = false, onChe
                           border: '2px solid',
                           borderColor: 'grey.200'
                         }}
-                        variant="rounded"
-                      >
-                        👟
-                      </Avatar>
-                      
+                      variant="rounded"
+                    >
+                      👟
+                    </Avatar>
+                    
                       <Box sx={{ flex: 1 }}>
                         <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
                           {info.name}
                         </Typography>
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                          {info.brand} • Pointure {info.size}
+                            {info.brand} • Pointure {info.size}
                         </Typography>
-                        {info.stock !== undefined && (
+                            {info.stock !== undefined && (
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                             <Box sx={{ 
                               width: 8, 
@@ -265,9 +264,9 @@ const CartDrawer = ({ open, onClose, onLoginRequest, autoCheckout = false, onChe
                           </Box>
                         )}
                         <Typography variant="h6" color="primary.main" sx={{ fontWeight: 700 }}>
-                          {parseFloat(info.price).toFixed(2)}€
-                        </Typography>
-                      </Box>
+                            {parseFloat(info.price).toFixed(2)}€
+                          </Typography>
+                        </Box>
                     </Box>
                     
                     {/* Contrôles en bas de la carte */}
@@ -288,11 +287,11 @@ const CartDrawer = ({ open, onClose, onLoginRequest, autoCheckout = false, onChe
                       }}>
                         <Button
                           variant="contained"
-                          size="small"
+                            size="small" 
                           onClick={() => {
                             handleQuantityChange(item.id, item.quantity - 1);
                           }}
-                          disabled={loading || item.quantity <= 1}
+                            disabled={loading || item.quantity <= 1}
                           sx={{
                             minWidth: 36,
                             width: 36,
@@ -302,8 +301,8 @@ const CartDrawer = ({ open, onClose, onLoginRequest, autoCheckout = false, onChe
                             '&:hover': { bgcolor: 'error.dark' },
                             '&:disabled': { bgcolor: 'grey.300' }
                           }}
-                        >
-                          <Remove fontSize="small" />
+                          >
+                            <Remove fontSize="small" />
                         </Button>
                         
                         <Typography 
@@ -315,16 +314,16 @@ const CartDrawer = ({ open, onClose, onLoginRequest, autoCheckout = false, onChe
                             mx: 1
                           }}
                         >
-                          {item.quantity}
-                        </Typography>
-                        
+                            {item.quantity}
+                          </Typography>
+                          
                         <Button
                           variant="contained"
-                          size="small"
+                            size="small" 
                           onClick={() => {
                             handleQuantityChange(item.id, item.quantity + 1);
                           }}
-                          disabled={loading || (info.stock !== undefined && item.quantity >= info.stock)}
+                            disabled={loading || (info.stock !== undefined && item.quantity >= info.stock)}
                           sx={{
                             minWidth: 36,
                             width: 36,
@@ -334,20 +333,20 @@ const CartDrawer = ({ open, onClose, onLoginRequest, autoCheckout = false, onChe
                             '&:hover': { bgcolor: 'success.dark' },
                             '&:disabled': { bgcolor: 'grey.300' }
                           }}
-                          title={info.stock !== undefined && item.quantity >= info.stock ? `Stock maximum atteint (${info.stock})` : 'Augmenter la quantité'}
-                        >
-                          <Add fontSize="small" />
+                            title={info.stock !== undefined && item.quantity >= info.stock ? `Stock maximum atteint (${info.stock})` : 'Augmenter la quantité'}
+                          >
+                            <Add fontSize="small" />
                         </Button>
-                      </Box>
-                      
+                        </Box>
+                        
                       {/* Bouton supprimer - Version simplifiée */}
                       <Button
                         variant="contained"
-                        size="small"
+                          size="small" 
                         onClick={() => {
                           handleRemoveItemRequest(item);
                         }}
-                        disabled={loading}
+                          disabled={loading}
                         sx={{
                           minWidth: 44,
                           width: 44,
@@ -365,7 +364,7 @@ const CartDrawer = ({ open, onClose, onLoginRequest, autoCheckout = false, onChe
                         <Delete fontSize="small" />
                       </Button>
                     </Box>
-                  </Box>
+                      </Box>
                 );
               })}
             </Box>
@@ -380,7 +379,7 @@ const CartDrawer = ({ open, onClose, onLoginRequest, autoCheckout = false, onChe
               zIndex: 1000,
               pointerEvents: 'auto'
             }}>
-              {/* Total */}
+            {/* Total */}
               <Box sx={{ 
                 p: 2, 
                 bgcolor: 'white',
@@ -389,37 +388,37 @@ const CartDrawer = ({ open, onClose, onLoginRequest, autoCheckout = false, onChe
                 borderColor: 'grey.200',
                 mb: 3
               }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
                     Total:
                   </Typography>
                   <Typography variant="h5" sx={{ fontWeight: 700, color: 'primary.main' }}>
-                    {cart.total.toFixed(2)}€
-                  </Typography>
-                </Box>
+                  {cart.total.toFixed(2)}€
+                </Typography>
               </Box>
+            </Box>
 
-              {/* Actions */}
-              {!user && (
+            {/* Actions */}
+            {!user && (
                 <Alert severity="info" sx={{ mb: 3, borderRadius: '12px' }}>
                   <Typography variant="body2">
-                    Connectez-vous pour finaliser votre commande
+                Connectez-vous pour finaliser votre commande
                   </Typography>
-                </Alert>
-              )}
-              
-              <Button
-                variant="contained"
-                fullWidth
-                size="large"
-                disabled={loading}
+              </Alert>
+            )}
+            
+            <Button
+              variant="contained"
+              fullWidth
+              size="large"
+              disabled={loading}
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (!user) {
-                    onClose();
-                    onLoginRequest();
-                  } else {
-                    setCheckoutOpen(true);
+                if (!user) {
+                  onClose();
+                  onLoginRequest();
+                } else {
+                  setCheckoutOpen(true);
                     // Garder le panier ouvert en arrière-plan
                   }
                 }}
@@ -445,36 +444,36 @@ const CartDrawer = ({ open, onClose, onLoginRequest, autoCheckout = false, onChe
                 }}
               >
                 {user ? '🚀 Commander' : '🔐 Se connecter pour commander'}
-              </Button>
+            </Button>
             </Box>
           </>
         )}
       </Box>
       </Drawer>
         
-      <CheckoutSimple 
-        open={checkoutOpen} 
-        onClose={() => setCheckoutOpen(false)}
+        <CheckoutSimple 
+          open={checkoutOpen} 
+          onClose={() => setCheckoutOpen(false)} 
         onCancel={handleCheckoutCancel}
         onSuccess={handleCheckoutSuccess}
-      />
+        />
 
-      <ConfirmDialog
-        open={confirmRemoveOpen}
-        onClose={handleRemoveItemCancel}
-        onConfirm={handleRemoveItemConfirm}
-        title="Supprimer l'article"
-        message={itemToRemove ? 
-          `Êtes-vous sûr de vouloir supprimer "${getItemInfo(itemToRemove).name}" de votre panier ?` : 
-          'Êtes-vous sûr de vouloir supprimer cet article ?'
-        }
-        confirmText="Oui, supprimer"
-        cancelText="Non, conserver"
-        severity="warning"
-        loading={removeLoading}
-      />
+        <ConfirmDialog
+          open={confirmRemoveOpen}
+          onClose={handleRemoveItemCancel}
+          onConfirm={handleRemoveItemConfirm}
+          title="Supprimer l'article"
+          message={itemToRemove ? 
+            `Êtes-vous sûr de vouloir supprimer "${getItemInfo(itemToRemove).name}" de votre panier ?` : 
+            'Êtes-vous sûr de vouloir supprimer cet article ?'
+          }
+          confirmText="Oui, supprimer"
+          cancelText="Non, conserver"
+          severity="warning"
+          loading={removeLoading}
+        />
     </>
-  );
-};
+    );
+  };
 
 export default CartDrawer;

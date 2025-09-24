@@ -135,6 +135,20 @@ router.put('/:id', authenticateToken, async (req, res) => {
   }
 });
 
+// Route pour vider complètement le panier (AVANT /:id pour éviter les conflits)
+router.delete('/clear', authenticateToken, async (req, res) => {
+  try {
+    await CartItem.destroy({
+      where: { userId: req.user.id }
+    });
+
+    res.json({ message: 'Cart cleared successfully' });
+  } catch (error) {
+    console.error('Clear cart error:', error);
+    res.status(500).json({ error: 'Failed to clear cart' });
+  }
+});
+
 router.delete('/:id', authenticateToken, async (req, res) => {
   try {
     const cartItem = await CartItem.findOne({
@@ -150,20 +164,6 @@ router.delete('/:id', authenticateToken, async (req, res) => {
   } catch (error) {
     console.error('Remove from cart error:', error);
     res.status(500).json({ error: 'Failed to remove from cart' });
-  }
-});
-
-// Route pour vider complètement le panier
-router.delete('/clear', authenticateToken, async (req, res) => {
-  try {
-    await CartItem.destroy({
-      where: { userId: req.user.id }
-    });
-
-    res.json({ message: 'Cart cleared successfully' });
-  } catch (error) {
-    console.error('Clear cart error:', error);
-    res.status(500).json({ error: 'Failed to clear cart' });
   }
 });
 
